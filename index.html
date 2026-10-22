@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="泰兴数产工作台">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2720%27%20fill%3D%27white%27%2F%3E%3Ctext%20x%3D%2750%27%20y%3D%2747%27%20font-size%3D%2725%27%20font-weight%3D%27700%27%20fill%3D%27%25230E5390%27%20text-anchor%3D%27middle%27%20font-family%3D%27sans-serif%27%3E%E6%95%B0%E4%BA%A7%3C%2Ftext%3E%3Cpath%20d%3D%27M18%2062%20Q50%2080%2082%2060%27%20stroke%3D%27%2523E8821E%27%20stroke-width%3D%277%27%20fill%3D%27none%27%20stroke-linecap%3D%27round%27%2F%3E%3C%2Fsvg%3E">
-<title>泰兴数产 · 个人工作台 V3.6（品牌光晕 · 全景玻璃版）</title>
+<title>泰兴数产 · 个人工作台 V3.7（品牌光晕 · 全景玻璃版）</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231f3b63'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif'>数</text></svg>">
 <style>
 :root{
@@ -333,9 +333,10 @@ input[type=checkbox].big{accent-color:#0E5390}
       <button class="btn ghostlight iconbtn" id="btnSearchToggle" aria-label="搜索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="19" height="19" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
       <button class="btn ghostlight" id="btnQuick">＋ 记一条</button>
       <span class="dmwrap"><button class="btn ghostlight" id="btnDataMenu" aria-haspopup="true">数据 ▾</button><span class="datamenu" id="dataMenu"><button class="btn" id="btnExport">导出备份</button><button class="btn" id="btnImport">导入恢复</button></span></span>
+      <span id="storageStatus" style="display:none;color:#FFE6A8;font-size:11px;white-space:nowrap">临时存储</span>
       <input type="file" id="fileImport" accept=".json,application/json" hidden>
     </div>
-    <div class="searchbox" id="searchBox" style="display:none"><input id="globalSearch" type="text" placeholder="全局搜索：日志 / 任务 / 项目"></div>
+    <div class="searchbox" id="searchBox" style="display:none"><input id="globalSearch" type="text" placeholder="搜索日志 / 任务 / 项目 / 周报 / 备忘"></div>
     <div class="top-date" id="topDate"></div>
   </div>
 </header>
@@ -393,6 +394,7 @@ input[type=checkbox].big{accent-color:#0E5390}
         <div class="field"><label>时间</label><input type="time" id="logTime" data-autodefault=""></div>
         <div class="field"><label>类型</label><select id="logType" data-autodefault="会议"><option>会议</option><option>会谈</option><option>分派任务</option><option>项目推进</option><option>临时事项</option></select></div>
         <div class="field"><label>关联项目</label><select id="logProject" data-autodefault=""></select></div>
+        <div class="field"><label>关联任务</label><select id="logTask"><option value="">（不关联）</option></select></div>
       </div>
       <div class="frow">
         <div class="field wide"><label>事项内容</label><input type="text" id="logContent" placeholder="记下这件事：谈了什么、定了什么、下一步是什么"></div><div class="sub" id="logSmartLive" style="color:var(--blue);min-height:15px"></div>
@@ -416,7 +418,7 @@ input[type=checkbox].big{accent-color:#0E5390}
   <!-- 任务分派 -->
   <section class="page" id="page-tasks">
     <div class="card" id="collabBar" style="display:none">
-      <h3>协作流程演示 <span class="tag yellow">模拟角色 · 本机数据</span> <span class="tag gray">V3.6</span></h3>
+      <h3>协作流程演示 <span class="tag yellow">模拟角色 · 本机数据</span> <span class="tag gray">V3.7</span></h3>
       <div class="rolebtns">
         <div class="segtrack"><span class="segpill"></span><button class="btn small" data-role-set="leader">领导视角</button>
         <button class="btn small" data-role-set="me">员工本人</button>
@@ -476,12 +478,13 @@ input[type=checkbox].big{accent-color:#0E5390}
   <!-- 周报 -->
   <section class="page" id="page-weekly">
     <div class="filters no-print">
-      <button class="btn primary" id="btnWeekAuto">汇总本周</button>
+      <button class="btn primary" id="btnWeekAuto">同步本周</button>
       <button class="btn" id="btnBrief">生成领导版简报</button>
-      <span class="sp"></span><span class="sub" id="weekRange"></span>
+      <span class="sp"></span><button class="btn small" id="btnWeekPrev">上一周</button><button class="btn small" id="btnWeekNow">本周</button><button class="btn small" id="btnWeekNext">下一周</button><span class="sub" id="weekRange"></span>
     </div>
     <div class="filters no-print" style="margin-top:-6px">
       <button class="btn small" id="btnWeekConvert">把「下周计划」转为任务（先预览）</button>
+      <button class="btn small" id="btnWeekReport">汇报视图</button>
       <button class="btn small" id="btnWeekCopy">复制周报全文</button>
       <button class="btn small" id="btnWeekPrint">打印 / 存 PDF</button>
     </div>
@@ -493,7 +496,7 @@ input[type=checkbox].big{accent-color:#0E5390}
     <div class="form no-print">
       <h3 id="weekFormTitle">添加一条周报事项</h3>
       <div class="frow">
-        <div class="field"><label>条线 / 部门</label><select id="weekLine"><option>业务条线</option><option>技术条线</option><option>项目条线</option><option>行政条线</option><option>飞行家</option><option>云通</option><option>其他</option></select></div>
+        <div class="field"><label>条线 / 部门 <span class="sub">自动汇总默认分类，可修改</span></label><select id="weekLine"><option>业务条线</option><option>技术条线</option><option>项目条线</option><option>行政条线</option><option>飞行家</option><option>云通</option><option>其他</option></select></div>
         <div class="field"><label>归入</label><select id="weekGroup"><option value="plan">下周计划</option><option value="done">本周完成</option></select></div>
         <div class="field wide"><label>事项</label><input type="text" id="weekItem" placeholder="填写周报事项名称"></div>
       </div>
@@ -528,8 +531,18 @@ input[type=checkbox].big{accent-color:#0E5390}
   <button class="btn small" id="btnResetDemo">重置演示数据</button>
   <button class="btn small danger" id="btnClear">清空全部数据</button>
   <span id="dataInfo"></span>
-  <div class="sub" style="margin-top:6px">当前版本：V3.6 品牌光晕 · 全景玻璃版 · 2026-10-21</div>
+  <div class="sub" style="margin-top:6px">当前版本：V3.7 品牌光晕 · 全景玻璃版 · 2026-10-21</div>
 </details></div>
+
+<div class="modal-bg" id="weekReportModal"><div class="modal">
+  <div class="filters"><h3>周报汇报视图</h3><span class="sp"></span><button class="btn small" data-close-report>关闭</button></div>
+  <div class="field"><textarea id="weekReportText" rows="18" readonly aria-label="五段周报汇报文本"></textarea></div>
+  <button class="btn primary" id="btnReportCopy">复制汇报全文</button>
+</div></div>
+<div class="modal-bg" id="taskDetailModal"><div class="modal">
+  <div class="filters"><h3>任务详情</h3><span class="sp"></span><button class="btn small" data-close-task-detail>关闭</button></div>
+  <div id="taskDetailBody"></div>
+</div></div>
 
 <!-- project detail modal -->
 <div class="modal-bg" id="projDetailModal">
@@ -595,6 +608,15 @@ input[type=checkbox].big{accent-color:#0E5390}
       <button class="btn" id="qCancel">取消</button><button class="btn primary" id="qSave">保存</button>
     </div>
   </div>
+  <div class="modal-bg" id="suggestPlanModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="suggestPlanTitle">
+      <button class="modal-close" data-close-suggest aria-label="关闭">×</button>
+      <h3 id="suggestPlanTitle">下周计划建议</h3>
+      <p class="sub">这些任务符合下周计划条件，勾选后才会写入周报。</p>
+      <div id="suggestPlanList"></div>
+      <div class="modal-actions"><button class="btn" data-close-suggest>取消</button><button class="btn primary" id="btnSuggestOk">加入下周计划</button></div>
+    </div>
+  </div>
 </div>
 
 <!-- start mode modal -->
@@ -654,22 +676,142 @@ function addDays(base, n){ const d = new Date(base+"T00:00:00"); d.setDate(d.get
 function fmtDate(s){ if(!s) return ""; const d = new Date(s+"T00:00:00"); return s+"（周"+"日一二三四五六"[d.getDay()]+"）"; }
 function daysUntil(s){ const a = new Date(todayStr()+"T00:00:00"), b = new Date(s+"T00:00:00"); return Math.round((b-a)/86400000); }
 function esc(t){ return String(t==null?"":t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function isSafeId(v){ return typeof v === "string" && v.length > 0 && !/[^A-Za-z0-9_-]/.test(v); }
+function isRecord(v){ return v !== null && typeof v === "object" && !Array.isArray(v); }
+function failBackup(field){ throw new Error("备份字段「" + field + "」格式不正确"); }
+function textField(o, key, def){ if(o[key] === undefined) return def; if(typeof o[key] !== "string") failBackup(key); return o[key]; }
+function idField(o, key){
+  if(!isSafeId(o[key])) failBackup(key);
+  return o[key];
+}
+function refField(o, key, def){ const v = textField(o, key, def); if(v && !isSafeId(v)) failBackup(key); return v; }
+function boolField(o, key, def){ if(o[key] === undefined) return def; if(typeof o[key] !== "boolean") failBackup(key); return o[key]; }
+function enumField(o, key, values, def){ const v = textField(o, key, def); if(!values.includes(v)) failBackup(key); return v; }
+function roleField(o, key, def){ return enumField(o, key, ["leader","me","mate"], def); }
+function normalizeCollab(raw){
+  if(raw === undefined || raw === null) return raw === null ? null : undefined;
+  if(!isRecord(raw)) failBackup("collab");
+  const history = raw.history === undefined ? [] : (Array.isArray(raw.history) ? raw.history : failBackup("collab.history"));
+  const h = history.map((x, i)=>{
+    if(!isRecord(x)) failBackup("collab.history["+i+"]");
+    return { at:textField(x,"at",""), who:roleField(x,"who","me"), what:textField(x,"what",""), note:textField(x,"note","") };
+  });
+  let transfer = raw.transfer;
+  if(transfer !== undefined && transfer !== null){
+    if(!isRecord(transfer)) failBackup("collab.transfer");
+    transfer = { from:roleField(transfer,"from","me"), to:roleField(transfer,"to","mate"), reason:textField(transfer,"reason",""), at:textField(transfer,"at","") };
+  } else transfer = null;
+  return { assigner:roleField(raw,"assigner","leader"), firstAssignee:roleField(raw,"firstAssignee","me"), executor:roleField(raw,"executor","me"), execStatus:enumField(raw,"execStatus",["待接收","执行中","待确认完成","已完成"],"待接收"), progress:textField(raw,"progress",""), deliverable:textField(raw,"deliverable",""), transfer, history:h };
+}
+function normalizeBackup(raw){
+  if(!isRecord(raw)) throw new Error("备份文件必须是对象");
+  if(raw._mode !== undefined && (typeof raw._mode !== "string" || (raw._mode !== "demo" && raw._mode !== "real"))) failBackup("_mode");
+  ["logs","tasks","projects","weekly","memos"].forEach(k=>{ if(!Array.isArray(raw[k])) failBackup(k); });
+  const logs = raw.logs.map((x,i)=>{
+    if(!isRecord(x)) failBackup("logs["+i+"]");
+    const r={id:idField(x,"id"), date:textField(x,"date",todayStr()), time:textField(x,"time",""), type:textField(x,"type","工作记录"), content:textField(x,"content",""), related:textField(x,"related",""), projectId:refField(x,"projectId","")};
+    if(x.confirmed !== undefined) r.confirmed=boolField(x,"confirmed",false);
+    r.taskId=refField(x,"taskId","");
+    if(x.source !== undefined) r.source=textField(x,"source","");
+    return r;
+  });
+  const tasks = raw.tasks.map((x,i)=>{
+    if(!isRecord(x)) failBackup("tasks["+i+"]");
+    const r={id:idField(x,"id"), title:textField(x,"title",""), owner:textField(x,"owner",""), due:textField(x,"due",""), priority:textField(x,"priority","中"), projectId:refField(x,"projectId",""), done:boolField(x,"done",false), created:textField(x,"created",todayStr()), doneAt:textField(x,"doneAt",""), fromWeekId:refField(x,"fromWeekId","")};
+    if(x._flash !== undefined && x._flash !== 1 && typeof x._flash !== "boolean") failBackup("_flash");
+    // 撤销提示属于瞬态 UI 状态，不随备份恢复。
+    if(x.collab !== undefined) r.collab=normalizeCollab(x.collab);
+    return r;
+  });
+  const projects = raw.projects.map((x,i)=>{
+    if(!isRecord(x)) failBackup("projects["+i+"]");
+    if(x.progress !== undefined && (typeof x.progress !== "number" || !Number.isFinite(x.progress))) failBackup("progress");
+    return {id:idField(x,"id"), name:textField(x,"name",""), owner:textField(x,"owner",""), status:textField(x,"status","推进中"), start:textField(x,"start",""), end:textField(x,"end",""), progress:x.progress===undefined?0:x.progress, risk:textField(x,"risk",""), updatedAt:textField(x,"updatedAt","")};
+  });
+  const weekly = raw.weekly.map((x,i)=>{
+    if(!isRecord(x)) failBackup("weekly["+i+"]");
+    const r={id:idField(x,"id"), line:textField(x,"line","业务条线"), group:textField(x,"group","plan"), item:textField(x,"item",""), progress:textField(x,"progress",""), weekStart:textField(x,"weekStart","")};
+    r.projectId=refField(x,"projectId","");
+    if(x.generatedText !== undefined){
+      if(!isRecord(x.generatedText)) failBackup("generatedText");
+      r.generatedText={};
+      ["line","group","item","progress"].forEach(k=>{ if(typeof x.generatedText[k] !== "string") failBackup("generatedText."+k); r.generatedText[k]=x.generatedText[k]; });
+    }
+    if(x.src !== undefined){
+      if(typeof x.src !== "string") failBackup("src");
+      if(x.src){
+        const srcMatch = /^(log|task):([A-Za-z0-9_-]+)$/.exec(x.src) || /^suggest:task:([A-Za-z0-9_-]+)$/.exec(x.src);
+        if(!srcMatch) failBackup("src");
+      }
+      r.src=x.src;
+    }
+    return r;
+  });
+  const memos = raw.memos.map((x,i)=>{
+    if(!isRecord(x)) failBackup("memos["+i+"]");
+    return {id:idField(x,"id"), content:textField(x,"content",""), when:textField(x,"when","")};
+  });
+  const brief = raw._brief === undefined ? "" : textField(raw, "_brief", "");
+  const result = { logs, tasks, projects, weekly, memos, _brief: brief };
+  ["logs","tasks","projects","weekly","memos"].forEach(key=>{ const ids = new Set(); result[key].forEach(r=>{ if(ids.has(r.id)) failBackup(key+".id（重复）"); ids.add(r.id); }); });
+  return result;
+}
+// 先在候选对象上完成迁移与渲染检查，存储最后提交；失败恢复原 DB。
+function commitImported(candidate){
+  const key = curKey(), meetKey = meetMigKey();
+  const oldDB = DB, oldFallback = MEMFALLBACK;
+  const oldMeetRaw = localStorage.getItem(meetKey);
+  const briefKey = "ts_brief_draft_" + (MODE || "real");
+  const oldBrief = storeGet(briefKey);
+  const importedBrief = candidate._brief || "";
+  delete candidate._brief;
+  migrateWeekly(candidate);
+  const needsMeetMark = migrateMeetings(candidate, false);
+  syncWeekly("", candidate);
+  const serialized = JSON.stringify(candidate);
+  let marked = false;
+  try{
+    DB = candidate;
+    renderAll();
+    if(needsMeetMark){ localStorage.setItem(meetKey, "1"); marked = true; }
+    // 原生 setItem 单键写入具有原子性；失败不会替换旧备份。
+    localStorage.setItem(key, serialized);
+    localStorage.setItem(briefKey, importedBrief);
+  }catch(err){
+    DB = oldDB; MEMFALLBACK = oldFallback;
+    if(marked){
+      try{ if(oldMeetRaw === null) localStorage.removeItem(meetKey); else localStorage.setItem(meetKey, oldMeetRaw); }catch(e){}
+    }
+    try{ if(oldBrief === null || oldBrief === undefined) localStorage.removeItem(briefKey); else localStorage.setItem(briefKey, oldBrief); }catch(e){}
+    try{ renderAll(); }catch(e){}
+    throw err;
+  }
+}
+
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 let toastTimer = null;
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("show"), 2600); }
-function weekRange(){ const now = new Date(); const dow = (now.getDay()+6)%7; const mon = new Date(now); mon.setDate(now.getDate()-dow); const sun = new Date(mon); sun.setDate(mon.getDate()+6); return { start: dstr(mon), end: dstr(sun) }; }
+let weekOffset = 0;
+function weekRange(){ const now = new Date(); now.setDate(now.getDate()+weekOffset*7); const dow = (now.getDay()+6)%7; const mon = new Date(now); mon.setDate(now.getDate()-dow); const sun = new Date(mon); sun.setDate(mon.getDate()+6); return { start: dstr(mon), end: dstr(sun) }; }
 
 /* ============ 数据层：统一结构，全部以 id 关联 ============ */
 const KEY = "ts_workbench_v2";
 let DB = { logs:[], tasks:[], projects:[], weekly:[], memos:[] };
-let MEMFALLBACK = null, storeWarned = false;
-function storeSet(k, v){ try{ localStorage.setItem(k, v); return true; }catch(e){ MEMFALLBACK = v; return false; } }
+let MEMFALLBACK = null, storeWarned = false, storageDegraded = false;
+function renderStorageStatus(){ const el=$("#storageStatus"); if(el) el.style.display=storageDegraded?"inline":"none"; }
+function storeSet(k, v){ try{ localStorage.setItem(k, v); storageDegraded=false; renderStorageStatus(); return true; }catch(e){ MEMFALLBACK = v; storageDegraded=true; renderStorageStatus(); return false; } }
 function storeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return MEMFALLBACK; } }
 const MODE_KEY = "ts_workbench_mode";
 const DEMO_KEY = KEY + "_demo";
 let MODE = ""; try{ MODE = storeGet(MODE_KEY) || ""; }catch(e){}
 function curKey(){ return MODE === "demo" ? DEMO_KEY : KEY; }
-function save(){ const ok = storeSet(curKey(), JSON.stringify(DB)); renderAll(); if(!ok && !storeWarned){ storeWarned = true; setTimeout(()=>toast("当前打开方式下数据只能临时保存，关掉就没了；请在 Safari 里打开使用"), 1500); } return ok; }
+function save(sync = true){
+  const stats = sync ? syncWeekly() : null;
+  const ok = storeSet(curKey(), JSON.stringify(DB)); renderAll(); renderStorageStatus();
+  if(stats && stats.conflicts){
+    const savedDB = DB, savedMode = MODE;
+    queueMicrotask(()=>{ if(DB===savedDB && MODE===savedMode){ const msg = $("#toast").classList.contains("show") ? $("#toast").textContent.replace(/；已保留 \d+ 条手改周报.*$/, "") : "周报已同步"; toast(msg+"；已保留 "+stats.conflicts+" 条手改周报，未覆盖或删除"); } });
+  } if(!ok && !storeWarned){ storeWarned = true; setTimeout(()=>toast("当前打开方式下数据只能临时保存，关掉就没了；请在 Safari 里打开使用"), 1500); } return ok; }
 function load(){
   try{ const raw = storeGet(curKey()); if(raw){ const p = JSON.parse(raw); if(p && Array.isArray(p.logs) && Array.isArray(p.tasks)) DB = Object.assign(DB, p); } }catch(e){}
 }
@@ -683,6 +825,14 @@ function taskState(t){
   if(d <= 3) return "soon";
   return "active";
 }
+function taskActivityMeta(t){
+  const when = t.done && t.doneAt ? t.doneAt : (t.created || t.due || "");
+  const parts = [];
+  if(t.done && t.doneAt) parts.push("完成于 "+t.doneAt);
+  if(t.due) parts.push("截止 "+t.due);
+  if(t.owner) parts.push(t.owner);
+  return { when, detail: parts.join(" · ") };
+}
 function dueLabel(t){
   if(t.done) return '<span class="tag green">已完成</span>';
   if(!t.due) return '<span class="tag gray">未设截止</span>';
@@ -690,7 +840,7 @@ function dueLabel(t){
   if(d < 0) return '<span class="tag red">逾期 '+(-d)+' 天</span>';
   if(d === 0) return '<span class="tag red">今天到期</span>';
   if(d <= 3) return '<span class="tag yellow">'+d+' 天后到期</span>';
-  return '<span class="tag gray">'+fmtDate(t.due)+'</span>';
+  return '<span class="tag gray">'+esc(fmtDate(t.due))+'</span>';
 }
 function priTag(p){ return p==="高" ? '<span class="tag red">高</span>' : (p==="中" ? '<span class="tag yellow">中</span>' : '<span class="tag gray">低</span>'); }
 
@@ -712,8 +862,9 @@ document.addEventListener("click", e=>{ const g = e.target.closest("[data-goto]"
 
 /* ============ 下拉：项目选项 ============ */
 function fillProjectSelects(){
-  const opts = '<option value="">（不关联）</option>' + DB.projects.map(p=>'<option value="'+p.id+'">'+esc(p.name)+'</option>').join("");
+  const opts = '<option value="">（不关联）</option>' + DB.projects.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join("");
   ["#logProject","#taskProject","#projDynSel","#qProject"].forEach(sel=>{ const el = $(sel); if(el){ const v = el.value; el.innerHTML = opts; el.value = v; } });
+  fillLogTaskSelect();
 }
 
 /* ============ 今日页 ============ */
@@ -723,7 +874,7 @@ function capParts(parts){
 }
 function taskItemHtml(t){
   const flash = t.done && t._flash;
-  return '<div class="item'+(flash?' flashdone':'')+'"><input type="checkbox" class="big" data-complete-task="'+t.id+'"'+(t.done?" checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+dueLabel(t)+'</div><div class="sub">'+esc(t.owner||"未填")+(projName(t.projectId)?' · '+esc(projName(t.projectId)):'')+(t.due?' · <span class="nw">截止 '+esc(t.due)+'</span>':' · 未设截止')+'</div></div>'+(flash?'<div class="ops"><button class="btn small" data-undo-task="'+t.id+'">撤销</button></div>':'')+'</div>';
+  return '<div class="item'+(flash?' flashdone':'')+'"><input type="checkbox" class="big" data-complete-task="'+esc(t.id)+'"'+(t.done?" checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+dueLabel(t)+'</div><div class="sub">'+esc(t.owner||"未填")+(projName(t.projectId)?' · '+esc(projName(t.projectId)):'')+(t.due?' · <span class="nw">截止 '+esc(t.due)+'</span>':' · 未设截止')+'</div></div>'+(flash?'<div class="ops"><button class="btn small" data-undo-task="'+esc(t.id)+'">撤销</button></div>':'')+'</div>';
 }
 function renderToday(){
   const ts = todayStr();
@@ -751,12 +902,18 @@ function renderToday(){
   const doParts = [];
   DB.tasks.filter(t=>!t.collab && (!t.done || t._flash) && t.due && t.due<ts).sort((a,b)=>a.due.localeCompare(b.due)).forEach(t=>doParts.push(taskItemHtml(t)));
   DB.tasks.filter(t=>!t.collab && (!t.done || t._flash) && t.due===ts).forEach(t=>doParts.push(taskItemHtml(t)));
-  meetToday.slice().sort((a,b)=>(a.time||"").localeCompare(b.time||"")).forEach(l=>doParts.push('<div class="item"><div class="main"><div><span class="tag">会议</span>'+esc(l.content)+'</div><div class="sub">'+esc(l.time||"时间未定")+(projName(l.projectId)?' · '+esc(projName(l.projectId)):'')+'</div></div>'+(l.confirmed?'':'<div class="ops"><button class="btn small" data-confirm-log="'+l.id+'">确认已开</button></div>')+'</div>'));
+  meetToday.slice().sort((a,b)=>(a.time||"").localeCompare(b.time||"")).forEach(l=>doParts.push('<div class="item"><div class="main"><div><span class="tag">会议</span>'+esc(l.content)+'</div><div class="sub">'+esc(l.time||"时间未定")+(projName(l.projectId)?' · '+esc(projName(l.projectId)):'')+'</div></div>'+(l.confirmed?'':'<div class="ops"><button class="btn small" data-confirm-log="'+esc(l.id)+'">确认已开</button></div>')+'</div>'));
   $("#todayDoList").innerHTML = doParts.length ? capParts(doParts) + (doParts.length>5 ? '<div class="more-row" data-expand="todayDoList" data-label="展开全部 '+doParts.length+' 项">展开全部 '+doParts.length+' 项</div>' : "") : '<div class="empty">今天没有到期、逾期任务或会议</div>';
 
-  /* 后续关注：其余高优先任务 + 项目风险；逾期已进入主队列 */
+  /* 后续关注：临近截止优先，其余高优先任务 + 项目风险；逾期已进入主队列 */
   const attParts = [];
-  high.filter(t=>t.due!==ts && taskState(t)!=="overdue").forEach(t=>attParts.push(taskItemHtml(t)));
+  const soon = active.filter(t=>{
+    const d = daysUntil(t.due);
+    return t.due && taskState(t)!=="overdue" && t.due!==ts && d>=1 && d<=3;
+  }).sort((a,b)=>a.due.localeCompare(b.due));
+  const soonIds = new Set(soon.map(t=>t.id));
+  soon.forEach(t=>attParts.push(taskItemHtml(t).replace("</div>",'<span class="tag yellow">临近截止</span></div>')));
+  high.filter(t=>t.due!==ts && taskState(t)!=="overdue" && !soonIds.has(t.id)).forEach(t=>attParts.push(taskItemHtml(t)));
   DB.projects.filter(p=>p.status==="预警" || p.risk).forEach(p=>attParts.push('<div class="item" data-goto="projects"><div class="main"><div><span class="tag red">项目风险</span>'+esc(p.name)+'</div><div class="sub">'+esc(p.risk || "状态预警")+' · 进度 '+(p.progress||0)+'%</div></div></div>'));
   $("#urgentList").innerHTML = attParts.length ? capParts(attParts) + (attParts.length>5 ? '<div class="more-row" data-expand="urgentList" data-label="展开全部 '+attParts.length+' 项">展开全部 '+attParts.length+' 项</div>' : "") : '<div class="empty">没有需要特别关注的事项</div>';
 
@@ -768,15 +925,15 @@ function renderToday(){
   /* 项目动态：聚合日志与任务动态，取最近 8 条 */
   const acts = [];
   DB.logs.forEach(l=>{ if(l.projectId) acts.push({ when:l.date+" "+(l.time||""), txt:'<span class="tag">'+esc(l.type)+'</span>'+esc(l.content), proj:l.projectId }); });
-  DB.tasks.forEach(t=>{ if(t.projectId && !t.collab) acts.push({ when:t.created||t.due, txt:(t.done?'<span class="tag green">任务完成</span>':'<span class="tag yellow">任务</span>')+esc(t.title), proj:t.projectId }); });
+  DB.tasks.forEach(t=>{ if(t.projectId && !t.collab){ const meta=taskActivityMeta(t); acts.push({ when:meta.when, txt:(t.done?'<span class="tag green">任务完成</span>':'<span class="tag yellow">任务</span>')+esc(t.title), sub:meta.detail, proj:t.projectId }); } });
   acts.sort((a,b)=> b.when.localeCompare(a.when));
   $("#todayDynamics").innerHTML = acts.length ? acts.slice(0,4).map(a=>
-    '<div class="item"><div class="main"><div>'+a.txt+'</div><div class="sub">'+esc(projName(a.proj))+' · '+esc(a.when)+'</div></div></div>'
+    '<div class="item"><div class="main"><div>'+a.txt+'</div><div class="sub">'+esc(projName(a.proj))+' · '+esc(a.sub || a.when)+'</div></div></div>'
   ).join("") + (acts.length>4 ? '<div class="more-row" data-goto="projects">还有 '+(acts.length-4)+' 条动态，去项目页看全部</div>' : "") : '<div class="empty">还没有项目动态，先到项目台账新建项目</div>';
 
   /* 备忘 */
   $("#memoList").innerHTML = DB.memos.length ? DB.memos.slice().reverse().map(m=>
-    '<div class="memo-item"><span class="ops"><button class="btn small" data-memo-task="'+m.id+'">转任务</button> <button class="btn small danger" data-memo-del="'+m.id+'">删</button></span><div>'+esc(m.content)+'</div><div class="sub">'+esc(m.when)+'</div></div>'
+    '<div class="memo-item" data-mid="'+esc(m.id)+'"><span class="ops"><button class="btn small" data-memo-task="'+esc(m.id)+'">转任务</button> <button class="btn small danger" data-memo-del="'+esc(m.id)+'">删</button></span><div>'+esc(m.content)+'</div><div class="sub">'+esc(m.when)+'</div></div>'
   ).join("") : '<div class="empty">暂无备忘</div>';
 
   $("#dataInfo").textContent = " · 当前共 "+DB.logs.length+" 条日志、"+DB.tasks.length+" 条任务、"+DB.projects.length+" 个项目";
@@ -784,7 +941,7 @@ function renderToday(){
 $("#btnMemoSave").addEventListener("click", ()=>{
   const v = $("#memoInput").value.trim(); if(!v){ toast("备忘内容为空"); return; }
   DB.memos.push({ id:uid(), content:v, when:todayStr()+" "+pad(new Date().getHours())+":"+pad(new Date().getMinutes()) });
-  $("#memoInput").value=""; save(); toast("备忘已保存");
+  $("#memoInput").value=""; const ok=save(); toast(ok?"备忘已保存":"保存失败：备忘未能写入");
 });
 document.addEventListener("change", e=>{
   const c = e.target.closest("[data-complete-task]");
@@ -792,24 +949,35 @@ document.addEventListener("change", e=>{
     t.done = c.checked;
     if(t.done){ t.doneAt = todayStr(); t._flash = 1; setTimeout(()=>{ if(t._flash){ delete t._flash; save(); } }, 5000); }
     else { t.doneAt = ""; delete t._flash; }
-    save(); toast(t.done ? "已完成，5 秒内可在原处点「撤销」" : "已恢复为在办");
+    const ok=save(); toast(ok ? (t.done ? "已完成，5 秒内可在原处点「撤销」" : "已恢复为在办") : "保存失败：任务状态未能写入");
   } }
 });
 document.addEventListener("click", e=>{
   const mr = e.target.closest("[data-expand]");
   if(mr){ const c = document.getElementById(mr.dataset.expand); if(c){ const open = c.classList.toggle("expanded"); c.querySelectorAll("[data-extra]").forEach(el=>el.style.display = open ? "" : "none"); mr.textContent = open ? "收起" : mr.dataset.label; } return; }
   const cf = e.target.closest("[data-confirm-log]");
-  if(cf){ const l = DB.logs.find(x=>x.id===cf.dataset.confirmLog); if(l){ l.confirmed = true; save(); toast("已确认这场会开过了，可计入完成情况"); } return; }
+  if(cf){ const l = DB.logs.find(x=>x.id===cf.dataset.confirmLog); if(l){ l.confirmed = true; const ok=save(); toast(ok?"已确认这场会开过了，可计入完成情况":"保存失败：会议确认未能写入"); } return; }
   const un = e.target.closest("[data-undo-task]");
-  if(un){ const t = DB.tasks.find(x=>x.id===un.dataset.undoTask); if(t && t.collab){ toast("协作任务的完成状态由协作流程决定，不能在这里撤销"); return; } if(t){ t.done = false; t.doneAt = ""; delete t._flash; save(); toast("已撤销完成"); } return; }
+  if(un){ const t = DB.tasks.find(x=>x.id===un.dataset.undoTask); if(t && t.collab){ toast("协作任务的完成状态由协作流程决定，不能在这里撤销"); return; } if(t){ t.done = false; t.doneAt = ""; delete t._flash; const ok=save(); toast(ok?"已撤销完成":"保存失败：任务状态未能写入"); } return; }
   const mt = e.target.closest("[data-memo-task]");
   if(mt){ const m = DB.memos.find(x=>x.id===mt.dataset.memoTask); if(m){ openQuick(); $("#qKind").value = "task"; $("#qKind").dataset.touched = "1"; $("#qContent").value = m.content; $("#qDate").value = ""; window.__pendingMemo = m.id; setQKindUI(); toast("确认任务信息后点保存，截止日期可留空"); } }
   const md = e.target.closest("[data-memo-del]");
-  if(md){ if(confirm("删除这条备忘？")){ DB.memos = DB.memos.filter(x=>x.id!==md.dataset.memoDel); save(); } }
+  if(md){ if(confirm("删除这条备忘？")){ DB.memos = DB.memos.filter(x=>x.id!==md.dataset.memoDel); const ok=save(); toast(ok?"已删除备忘":"保存失败：备忘未能删除"); } }
 });
 
 /* ============ 工作日志 ============ */
 let editLogId = null;
+function fillLogTaskSelect(selected){
+  const el = $("#logTask"); if(!el) return;
+  const value = selected === undefined ? el.value : selected;
+  const pid = $("#logProject").value;
+  const original = DB.logs.find(l=>l.id===editLogId);
+  const linked = original && (original.projectId||"")===pid ? original.taskId : "";
+  const tasks = DB.tasks.filter(t=>(!taskCompleted(t) || t.id===linked) && (!pid || t.projectId===pid));
+  el.innerHTML = '<option value="">（不关联）</option>'+tasks.map(t=>'<option value="'+esc(t.id)+'">'+esc(t.title)+(taskCompleted(t)?'（已完成）':'')+'</option>').join("");
+  el.value = tasks.some(t=>t.id===value) ? value : "";
+}
+$("#logProject").addEventListener("change", ()=>fillLogTaskSelect());
 function renderLogs(){
   fillProjectSelects();
   const vd = $("#logViewDate").value || todayStr();
@@ -822,12 +990,12 @@ function renderLogs(){
   list = list.slice().sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time)).reverse();
   $("#logCount").textContent = kw ? "关键词共 "+list.length+" 条" : fmtDate(vd)+" 共 "+list.length+" 条";
   $("#logList").innerHTML = list.length ? list.map(l=>
-    '<div class="item" data-lid="'+l.id+'"><div class="main"><div><span class="tag">'+esc(l.type)+'</span><b>'+esc(l.date)+' '+esc(l.time||"")+'</b> '+esc(l.content)+'</div><div class="sub">'+(l.related?'涉及：'+esc(l.related)+' · ':'')+(projName(l.projectId)?'项目：'+esc(projName(l.projectId)):'未关联项目')+'</div></div><div class="ops">'+((l.date<=todayStr() && l.type==="会议" && !l.confirmed)?'<button class="btn small" data-confirm-log="'+l.id+'">确认已开</button>':'')+'<button class="btn small" data-log-edit="'+l.id+'">编辑</button><button class="btn small danger" data-log-del="'+l.id+'">删除</button></div></div>'
+    '<div class="item" data-lid="'+esc(l.id)+'"><div class="main"><div><span class="tag">'+esc(l.type)+'</span><b>'+esc(l.date)+' '+esc(l.time||"")+'</b> '+esc(l.content)+'</div><div class="sub">'+(l.related?'涉及：'+esc(l.related)+' · ':'')+(projName(l.projectId)?'项目：'+esc(projName(l.projectId)):'未关联项目')+(l.taskId && DB.tasks.some(t=>t.id===l.taskId)?' · 任务：'+esc(DB.tasks.find(t=>t.id===l.taskId).title):'')+'</div></div><div class="ops">'+((l.date<=todayStr() && l.type==="会议" && !l.confirmed)?'<button class="btn small" data-confirm-log="'+esc(l.id)+'">确认已开</button>':'')+'<button class="btn small" data-log-edit="'+esc(l.id)+'">编辑</button><button class="btn small danger" data-log-del="'+esc(l.id)+'">删除</button></div></div>'
   ).join("") : '<div class="empty">这一天没有记录，可在上方补记；清空上方日期或输入关键词可跨日期查找</div>';
 }
 $("#btnLogSave").addEventListener("click", ()=>{
   const content = $("#logContent").value.trim(); if(!content){ toast("事项内容不能为空"); return; }
-  const rec = { date:$("#logDate").value||todayStr(), time:$("#logTime").value||"", type:$("#logType").value, content, related:$("#logRelated").value.trim(), projectId:$("#logProject").value||"" };
+  const rec = { date:$("#logDate").value||todayStr(), time:$("#logTime").value||"", type:$("#logType").value, content, related:$("#logRelated").value.trim(), projectId:$("#logProject").value||"", taskId:$("#logTask").value||"" };
   touchProject(rec.projectId);
   if(editLogId){
     const old = DB.logs.find(x=>x.id===editLogId);
@@ -840,20 +1008,21 @@ $("#btnLogSave").addEventListener("click", ()=>{
   }
   if(rec.type==="会议" && rec.confirmed===undefined) rec.confirmed = false;
   if(editLogId && !DB.logs.find(x=>x.id===editLogId)) editLogId = null;
-  if(editLogId){ Object.assign(DB.logs.find(x=>x.id===editLogId), rec); toast("日志已更新"); }
-  else{ DB.logs.push(Object.assign({ id:uid() }, rec)); toast("日志已写入"); }
+  const logWasEdit=!!editLogId;
+  if(editLogId){ Object.assign(DB.logs.find(x=>x.id===editLogId), rec); }
+  else{ DB.logs.push(Object.assign({ id:uid() }, rec)); }
   editLogId = null; $("#logFormTitle").textContent = "记一条日志"; $("#btnLogSave").textContent = "写入日志"; $("#btnLogCancel").style.display="none";
-  $("#logContent").value=""; $("#logRelated").value="";
-  $("#logViewDate").value = rec.date; save();
+  $("#logContent").value=""; $("#logRelated").value=""; $("#logTask").value="";
+  $("#logViewDate").value = rec.date; const logOk=save(); toast(logOk?(logWasEdit?"日志已更新":"日志已写入"):"保存失败：日志未能写入");
 });
-$("#btnLogCancel").addEventListener("click", ()=>{ editLogId=null; $("#logFormTitle").textContent="记一条日志"; $("#btnLogSave").textContent="写入日志"; $("#btnLogCancel").style.display="none"; $("#logContent").value=""; $("#logRelated").value=""; });
+$("#btnLogCancel").addEventListener("click", ()=>{ editLogId=null; $("#logFormTitle").textContent="记一条日志"; $("#btnLogSave").textContent="写入日志"; $("#btnLogCancel").style.display="none"; $("#logContent").value=""; $("#logRelated").value=""; $("#logTask").value=""; });
 document.addEventListener("click", e=>{
   const ed = e.target.closest("[data-log-edit]");
   if(ed){ const l = DB.logs.find(x=>x.id===ed.dataset.logEdit); if(!l) return; editLogId = l.id; markTouched(["logDate","logTime","logType","logProject"]);
-    $("#logDate").value=l.date; $("#logTime").value=l.time||""; $("#logType").value=l.type; $("#logContent").value=l.content; $("#logRelated").value=l.related||""; $("#logProject").value=l.projectId||"";
+    $("#logDate").value=l.date; $("#logTime").value=l.time||""; $("#logType").value=l.type; $("#logContent").value=l.content; $("#logRelated").value=l.related||""; $("#logProject").value=l.projectId||""; fillLogTaskSelect(l.taskId||"");
     $("#logFormTitle").textContent="编辑日志"; $("#btnLogSave").textContent="保存修改"; $("#btnLogCancel").style.display=""; openFormModal("logs"); }
   const del = e.target.closest("[data-log-del]");
-  if(del){ if(confirm("删除这条日志？")){ DB.logs = DB.logs.filter(x=>x.id!==del.dataset.logDel); save(); toast("已删除"); } }
+  if(del){ if(confirm("删除这条日志？")){ DB.logs = DB.logs.filter(x=>x.id!==del.dataset.logDel); const ok=save(); toast(ok?"已删除日志":"保存失败：日志未能删除"); } }
 });
 ["#logViewDate","#logFilterType"].forEach(s=>$(s).addEventListener("change", renderLogs));
 $("#logKeyword").addEventListener("input", renderLogs);
@@ -874,7 +1043,7 @@ function renderTasks(){
   const cAll = DB.tasks.length, cAct = DB.tasks.filter(t=>!t.done).length, cOver = DB.tasks.filter(t=>taskState(t)==="overdue").length, cDone = DB.tasks.filter(t=>t.done).length;
   $("#taskCount").textContent = "在办 "+cAct+" · 逾期 "+cOver+" · 已完成 "+cDone+" · 共 "+cAll;
   $("#taskList").innerHTML = list.length ? list.map(t=> (t.collab && MODE==="demo") ? collabRowHtml(t) : (
-    '<div class="item" data-tid="'+t.id+'"><input type="checkbox" class="big" data-complete-task="'+t.id+'" '+(t.done?"checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+priTag(t.priority)+' '+dueLabel(t)+'</div><div class="sub">责任人：'+esc(t.owner||"未填")+(projName(t.projectId)?' · 项目：'+esc(projName(t.projectId)):'')+(t.due?' · <span class="nw">截止 '+esc(t.due)+'</span>':' · 未设截止')+'</div></div><div class="ops">'+(t._flash?'<button class="btn small" data-undo-task="'+t.id+'">撤销</button>':'')+'<button class="btn small" data-task-edit="'+t.id+'">编辑</button><button class="btn small danger" data-task-del="'+t.id+'">删除</button></div></div>'
+    '<div class="item" data-tid="'+esc(t.id)+'"><input type="checkbox" class="big" data-complete-task="'+esc(t.id)+'" '+(t.done?"checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+priTag(t.priority)+' '+dueLabel(t)+'</div><div class="sub">责任人：'+esc(t.owner||"未填")+(projName(t.projectId)?' · 项目：'+esc(projName(t.projectId)):'')+(t.due?' · <span class="nw">截止 '+esc(t.due)+'</span>':' · 未设截止')+'</div></div><div class="ops">'+(t._flash?'<button class="btn small" data-undo-task="'+esc(t.id)+'">撤销</button>':'')+'<button class="btn small" data-task-open="'+esc(t.id)+'">详情</button><button class="btn small" data-task-edit="'+esc(t.id)+'">编辑</button><button class="btn small danger" data-task-del="'+esc(t.id)+'">删除</button></div></div>'
   )).join("") : '<div class="empty">这一类暂无任务</div>';
 }
 $("#btnTaskSave").addEventListener("click", ()=>{
@@ -882,10 +1051,11 @@ $("#btnTaskSave").addEventListener("click", ()=>{
   const rec = { title, owner:$("#taskOwner").value.trim(), due:$("#taskDue").value||"", priority:$("#taskPri").value, projectId:$("#taskProject").value||"" };
   touchProject(rec.projectId);
   if(editTaskId && !DB.tasks.find(x=>x.id===editTaskId)) editTaskId = null;
-  if(editTaskId){ Object.assign(DB.tasks.find(x=>x.id===editTaskId), rec); toast("任务已更新"); }
-  else{ DB.tasks.push(Object.assign({ id:uid(), done:false, created:todayStr() }, rec)); toast("任务已布置"); }
+  const taskWasEdit=!!editTaskId;
+  if(editTaskId){ Object.assign(DB.tasks.find(x=>x.id===editTaskId), rec); }
+  else{ DB.tasks.push(Object.assign({ id:uid(), done:false, created:todayStr() }, rec)); }
   editTaskId = null; $("#taskFormTitle").textContent="新建个人任务"; $("#btnTaskSave").textContent="保存任务"; $("#btnTaskCancel").style.display="none";
-  $("#taskTitle").value=""; $("#taskOwner").value=""; save();
+  $("#taskTitle").value=""; $("#taskOwner").value=""; const taskOk=save(); toast(taskOk?(taskWasEdit?"任务已更新":"任务已布置"):"保存失败：任务未能写入");
 });
 $("#btnTaskCancel").addEventListener("click", ()=>{ editTaskId=null; $("#taskFormTitle").textContent="新建个人任务"; $("#btnTaskSave").textContent="保存任务"; $("#btnTaskCancel").style.display="none"; $("#taskTitle").value=""; $("#taskOwner").value=""; });
 document.addEventListener("click", e=>{
@@ -894,7 +1064,7 @@ document.addEventListener("click", e=>{
     $("#taskTitle").value=t.title; $("#taskOwner").value=t.owner||""; $("#taskDue").value=t.due; $("#taskPri").value=t.priority; $("#taskProject").value=t.projectId||"";
     $("#taskFormTitle").textContent="编辑任务"; $("#btnTaskSave").textContent="保存修改"; $("#btnTaskCancel").style.display=""; openFormModal("tasks"); }
   const del = e.target.closest("[data-task-del]");
-  if(del){ if(confirm("删除这条任务？")){ DB.tasks = DB.tasks.filter(x=>x.id!==del.dataset.taskDel); save(); toast("已删除"); } }
+  if(del){ if(confirm("删除这条任务？")){ DB.tasks = DB.tasks.filter(x=>x.id!==del.dataset.taskDel); DB.logs.forEach(l=>{ if(l.taskId===del.dataset.taskDel) l.taskId=""; }); const ok=save(); toast(ok?"已删除任务":"保存失败：任务未能删除"); } }
 });
 ["#taskFilterStatus","#taskFilterPri"].forEach(s=>$(s).addEventListener("change", renderTasks));
 $("#taskFilterOwner").addEventListener("input", renderTasks);
@@ -905,7 +1075,7 @@ function renderProjects(){
   fillProjectSelects();
   const grid = $("#projGrid");
   grid.innerHTML = DB.projects.length ? DB.projects.map(p=>
-    '<div class="card proj'+(p.id===selProjId?" sel":"")+'" data-proj-sel="'+p.id+'"><div style="display:flex;gap:8px;align-items:flex-start"><div class="main" style="flex:1"><div class="pname">'+esc(p.name)+'</div><div class="sub">负责人：'+esc(p.owner||"未填")+' · '+esc(p.start||"")+' 至 '+esc(p.end||"")+'</div></div>'+statusTag(p.status)+'</div><div class="bar"><i class="'+(p.status==="预警"?"warnp":"")+'" style="width:'+Math.min(100,Math.max(0,p.progress||0))+'%"></i></div><div class="sub">进度 '+(p.progress||0)+'%'+(p.updatedAt?' · 最近更新 '+fmtDate(p.updatedAt):'')+(p.risk?' · <span class="risklab">风险：</span><span class="risktext">'+esc(p.risk)+'</span>':'')+'</div><div class="ops" style="margin-top:8px"><button class="btn small" data-proj-edit="'+p.id+'">编辑</button><button class="btn small danger" data-proj-del="'+p.id+'">删除</button></div></div>'
+    '<div class="card proj'+(p.id===selProjId?" sel":"")+'" data-proj-sel="'+esc(p.id)+'"><div style="display:flex;gap:8px;align-items:flex-start"><div class="main" style="flex:1"><div class="pname">'+esc(p.name)+'</div><div class="sub">负责人：'+esc(p.owner||"未填")+' · '+esc(p.start||"")+' 至 '+esc(p.end||"")+'</div></div>'+statusTag(p.status)+'</div><div class="bar"><i class="'+(p.status==="预警"?"warnp":"")+'" style="width:'+Math.min(100,Math.max(0,p.progress||0))+'%"></i></div><div class="sub">进度 '+(p.progress||0)+'%'+(p.updatedAt?' · 最近更新 '+esc(fmtDate(p.updatedAt)):'')+(p.risk?' · <span class="risklab">风险：</span><span class="risktext">'+esc(p.risk)+'</span>':'')+'</div><div class="ops" style="margin-top:8px"><button class="btn small" data-proj-edit="'+esc(p.id)+'">编辑</button><button class="btn small danger" data-proj-del="'+esc(p.id)+'">删除</button></div></div>'
   ).join("") : '<div class="card empty" style="grid-column:1/-1">还没有项目，用上方表单新建第一个项目</div>';
   /* 动态时间线 */
   const title = $("#projDynTitle"), body = $("#projDynamics");
@@ -914,7 +1084,7 @@ function renderProjects(){
   title.textContent = "当前项目：" + p.name;
   const acts = [];
   DB.logs.filter(l=>l.projectId===p.id).forEach(l=>acts.push({ when:l.date+" "+(l.time||""), html:'<span class="tag">'+esc(l.type)+'</span>'+esc(l.content), sub:(l.related||"") }));
-  DB.tasks.filter(t=>t.projectId===p.id && !t.collab).forEach(t=>acts.push({ when:t.due, html:(t.done?'<span class="tag green">已完成</span>':'<span class="tag yellow">任务</span>')+esc(t.title), sub:"截止 "+t.due+" · "+(t.owner||"") }));
+  DB.tasks.filter(t=>t.projectId===p.id && !t.collab).forEach(t=>{ const meta=taskActivityMeta(t); acts.push({ when:meta.when, html:(t.done?'<span class="tag green">已完成</span>':'<span class="tag yellow">任务</span>')+esc(t.title), sub:meta.detail }); });
   acts.sort((a,b)=>b.when.localeCompare(a.when));
   body.innerHTML = acts.length ? acts.map(a=>'<div class="item"><div class="main"><div>'+a.html+'</div><div class="sub">'+esc(a.when)+(a.sub?' · '+esc(a.sub):'')+'</div></div></div>').join("") : '<div class="empty">这个项目还没有日志和任务，去记一条关联它的日志</div>';
 }
@@ -926,10 +1096,11 @@ $("#btnProjSave").addEventListener("click", ()=>{
   else if(pProg===100 && pStatus!=="已完成"){ if(confirm("进度已经 100%，要同时把状态改成「已完成」吗？")){ pStatus = "已完成"; $("#projStatus").value = "已完成"; } }
   const rec = { name, owner:$("#projOwner").value.trim(), status:pStatus, start:$("#projStart").value||"", end:$("#projEnd").value||"", progress:pProg, risk:$("#projRisk").value.trim(), updatedAt: todayStr() };
   if(editProjId && !DB.projects.find(x=>x.id===editProjId)) editProjId = null;
-  if(editProjId){ Object.assign(DB.projects.find(x=>x.id===editProjId), rec); toast("项目已更新"); }
-  else{ const np = Object.assign({ id:uid() }, rec); DB.projects.push(np); selProjId = np.id; toast("项目已新建"); }
+  const projWasEdit=!!editProjId;
+  if(editProjId){ Object.assign(DB.projects.find(x=>x.id===editProjId), rec); }
+  else{ const np = Object.assign({ id:uid() }, rec); DB.projects.push(np); selProjId = np.id; }
   editProjId = null; $("#projFormTitle").textContent="新建项目"; $("#btnProjSave").textContent="保存项目"; $("#btnProjCancel").style.display="none";
-  ["#projName","#projOwner","#projRisk"].forEach(s=>$(s).value=""); $("#projProgress").value = 0; save();
+  ["#projName","#projOwner","#projRisk"].forEach(s=>$(s).value=""); $("#projProgress").value = 0; const projOk=save(); toast(projOk?(projWasEdit?"项目已更新":"项目已新建"):"保存失败：项目未能写入");
 });
 $("#btnProjCancel").addEventListener("click", ()=>{ editProjId=null; $("#projFormTitle").textContent="新建项目"; $("#btnProjSave").textContent="保存项目"; $("#btnProjCancel").style.display="none"; });
 document.addEventListener("click", e=>{
@@ -940,17 +1111,17 @@ document.addEventListener("click", e=>{
     $("#projName").value=p.name; $("#projOwner").value=p.owner||""; $("#projStatus").value=p.status; $("#projStart").value=p.start||""; $("#projEnd").value=p.end||""; $("#projProgress").value=p.progress||0; $("#projRisk").value=p.risk||"";
     $("#projFormTitle").textContent="编辑项目"; $("#btnProjSave").textContent="保存修改"; $("#btnProjCancel").style.display=""; openFormModal("projects"); }
   const del = e.target.closest("[data-proj-del]");
-  if(del){ if(confirm("删除这个项目？关联的日志和任务会保留，只是不再关联该项目。")){ const id = del.dataset.projDel; DB.projects = DB.projects.filter(x=>x.id!==id); DB.logs.forEach(l=>{ if(l.projectId===id) l.projectId=""; }); DB.tasks.forEach(t=>{ if(t.projectId===id) t.projectId=""; }); if(selProjId===id) selProjId=""; save(); toast("项目已删除"); } }
+  if(del){ if(confirm("删除这个项目？关联的日志和任务会保留，只是不再关联该项目。")){ const id = del.dataset.projDel; DB.projects = DB.projects.filter(x=>x.id!==id); DB.logs.forEach(l=>{ if(l.projectId===id) l.projectId=""; }); DB.tasks.forEach(t=>{ if(t.projectId===id) t.projectId=""; }); if(selProjId===id) selProjId=""; const ok=save(); toast(ok?"项目已删除":"保存失败：项目未能删除"); } }
 });
 
 /* ============ 周报 ============ */
 let editWeekId = null;
 function weekItemHtml(w){
-  return '<div class="item" data-wid="'+w.id+'"><div class="main"><div><span class="tag">'+esc(w.line)+'</span><b>'+esc(w.item)+'</b></div>'+(w.progress?'<div class="sub">'+esc(w.progress)+'</div>':'')+'</div><div class="ops"><button class="btn small" data-week-edit="'+w.id+'">编辑</button><button class="btn small danger" data-week-del="'+w.id+'">删除</button></div></div>';
+  return '<div class="item" data-wid="'+esc(w.id)+'"><div class="main"><div><span class="tag">'+esc(w.line)+'</span><b>'+esc(w.item)+'</b></div>'+(w.progress?'<div class="sub">'+esc(w.progress)+'</div>':'')+'</div><div class="ops"><button class="btn small" data-week-edit="'+esc(w.id)+'">编辑</button><button class="btn small danger" data-week-del="'+esc(w.id)+'">删除</button></div></div>';
 }
 function curWeekStart(){ return weekRange().start; }
 function weekItems(){ const s = curWeekStart(); return DB.weekly.filter(w=>w.weekStart===s); }
-function migrateWeekly(){ DB.weekly.forEach(w=>{ if(!w.weekStart) w.weekStart = "__legacy__"; }); }
+function migrateWeekly(target = DB){ target.weekly.forEach(w=>{ if(!w.weekStart) w.weekStart = "__legacy__"; }); }
 function renderWeekly(){
   refreshBriefBtn();
   const mine = weekItems();
@@ -960,22 +1131,23 @@ function renderWeekly(){
   const wr = weekRange(); $("#weekRange").textContent = "本周：" + wr.start + " 至 " + wr.end;
   const legacy = DB.weekly.filter(w=>w.weekStart==="__legacy__");
   $("#legacyWeekCard").style.display = legacy.length ? "" : "none";
-  $("#legacyWeekList").innerHTML = legacy.map(w=>'<div class="item"><div class="main"><div><span class="tag">'+esc(w.line)+'</span><b>'+esc(w.item)+'</b></div></div><div class="ops"><button class="btn small" data-legacy-assign="'+w.id+'">归入本周</button><button class="btn small danger" data-legacy-del="'+w.id+'">删除</button></div></div>').join("");
+  $("#legacyWeekList").innerHTML = legacy.map(w=>'<div class="item"><div class="main"><div><span class="tag">'+esc(w.line)+'</span><b>'+esc(w.item)+'</b></div></div><div class="ops"><button class="btn small" data-legacy-assign="'+esc(w.id)+'">归入本周</button><button class="btn small danger" data-legacy-del="'+esc(w.id)+'">删除</button></div></div>').join("");
 }
 $("#btnWeekSave").addEventListener("click", ()=>{
   const item = $("#weekItem").value.trim(); if(!item){ toast("事项不能为空"); return; }
   const rec = { line:$("#weekLine").value, group:$("#weekGroup").value, item, progress:$("#weekProgress").value.trim(), weekStart:curWeekStart() };
   if(editWeekId && !DB.weekly.find(x=>x.id===editWeekId)) editWeekId = null;
-  if(editWeekId){ Object.assign(DB.weekly.find(x=>x.id===editWeekId), rec); toast("周报条目已更新"); }
+  const weekWasEdit=!!editWeekId;
+  if(editWeekId){ Object.assign(DB.weekly.find(x=>x.id===editWeekId), rec); }
   else DB.weekly.push(Object.assign({ id:uid() }, rec));
   editWeekId = null; $("#weekFormTitle").textContent="添加一条周报事项"; $("#btnWeekSave").textContent="添加一条"; $("#btnWeekCancel").style.display="none";
-  $("#weekItem").value=""; $("#weekProgress").value=""; save();
+  $("#weekItem").value=""; $("#weekProgress").value=""; const weekOk=save(); toast(weekOk?(weekWasEdit?"周报条目已更新":"周报条目已添加"):"保存失败：周报条目未能写入");
 });
 document.addEventListener("click", e=>{
   const as = e.target.closest("[data-legacy-assign]");
-  if(as){ const w = DB.weekly.find(x=>x.id===as.dataset.legacyAssign); if(w){ w.weekStart = curWeekStart(); save(); toast("已归入本周周报"); } }
+  if(as){ const w = DB.weekly.find(x=>x.id===as.dataset.legacyAssign); if(w){ w.weekStart = curWeekStart(); const ok=save(); toast(ok?"已归入本周周报":"保存失败：周报归属未能保存"); } }
   const dl = e.target.closest("[data-legacy-del]");
-  if(dl){ if(confirm("删除这条待确认周报？")){ DB.weekly = DB.weekly.filter(x=>x.id!==dl.dataset.legacyDel); save(); } }
+  if(dl){ if(confirm("删除这条待确认周报？")){ DB.weekly = DB.weekly.filter(x=>x.id!==dl.dataset.legacyDel); const ok=save(); toast(ok?"已删除周报条目":"保存失败：周报条目未能删除"); } }
 });
 $("#btnWeekCancel").addEventListener("click", ()=>{ editWeekId=null; $("#weekFormTitle").textContent="添加一条周报事项"; $("#btnWeekSave").textContent="添加一条"; $("#btnWeekCancel").style.display="none"; $("#weekItem").value=""; $("#weekProgress").value=""; });
 document.addEventListener("click", e=>{
@@ -984,30 +1156,94 @@ document.addEventListener("click", e=>{
     $("#weekLine").value=w.line; $("#weekGroup").value=w.group; $("#weekItem").value=w.item; $("#weekProgress").value=w.progress||"";
     $("#weekFormTitle").textContent="编辑周报事项"; $("#btnWeekSave").textContent="保存修改"; $("#btnWeekCancel").style.display=""; }
   const del = e.target.closest("[data-week-del]");
-  if(del){ if(confirm("删除这条周报事项？")){ DB.weekly = DB.weekly.filter(x=>x.id!==del.dataset.weekDel); save(); } }
+  if(del){ if(confirm("删除这条周报事项？")){ DB.weekly = DB.weekly.filter(x=>x.id!==del.dataset.weekDel); const ok=save(); toast(ok?"已删除周报条目":"保存失败：周报条目未能删除"); } }
 });
+function taskCompleted(t){ return !!t.done && (!t.collab || t.collab.execStatus==="已完成"); }
+function weekStartForDate(date){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date||"")) return "";
+  const d = new Date(date+"T00:00:00"); if(Number.isNaN(d.getTime())) return "";
+  d.setDate(d.getDate()-(d.getDay()+6)%7); return dstr(d);
+}
+function generatedFields(w){ return {line:w.line, group:w.group, item:w.item, progress:w.progress||""}; }
+function sameGenerated(a,b){ return ["line","group","item","progress"].every(k=>(a[k]||"")===(b[k]||"")); }
+function generatedSources(data = DB){
+  const rows = new Map();
+  const name = id=>{ const p = data.projects.find(p=>p.id===id); return p ? p.name : ""; };
+  data.logs.filter(logHappened).forEach(l=>{
+    const weekStart=weekStartForDate(l.date); if(!weekStart) return;
+    const src="log:"+l.id;
+    rows.set(src, {src, weekStart, projectId:l.projectId||"", line:"项目条线", group:"done", item:(name(l.projectId)?"【"+name(l.projectId)+"】":"")+l.content, progress:l.date+" "+l.type});
+  });
+  data.tasks.filter(t=>taskCompleted(t) && t.doneAt).forEach(t=>{
+    const weekStart=weekStartForDate(t.doneAt); if(!weekStart) return;
+    const src="task:"+t.id;
+    rows.set(src, {src, weekStart, projectId:t.projectId||"", line:"业务条线", group:"done", item:"完成任务："+t.title,
+      progress:"完成于 "+t.doneAt+(t.collab?" · 执行人 "+roleName(t.collab.executor)+(t.collab.firstAssignee!==t.collab.executor?" · 最初接收 "+roleName(t.collab.firstAssignee):""):" · 责任人 "+(t.owner||""))});
+  });
+  return rows;
+}
+function syncWeekly(createStart = "", data = DB){
+  const sources = generatedSources(data), stats = {added:0,updated:0,removed:0,kept:0,conflicts:0};
+  data.weekly = data.weekly.filter(w=>{
+    if(!w.src || w.weekStart==="__legacy__") return true;
+    const source=sources.get(w.src), expected=source && source.weekStart===w.weekStart ? source : null;
+    // 旧版没有生成副本时，仅在当前文本与现源完全一致时建立基线，不能猜测手改内容。
+    if(!w.generatedText && expected && sameGenerated(w,expected)) w.generatedText=generatedFields(expected);
+    const edited=!w.generatedText || !sameGenerated(w,w.generatedText);
+    if(edited){ stats.kept++; if(!expected || !w.generatedText || !sameGenerated(expected,w.generatedText)) stats.conflicts++; return true; }
+    if(!expected){ stats.removed++; return false; }
+    if(!sameGenerated(w,expected) || (w.projectId||"")!==expected.projectId){ Object.assign(w,generatedFields(expected),{projectId:expected.projectId}); stats.updated++; }
+    w.generatedText=generatedFields(expected);
+    return true;
+  });
+  if(createStart){
+    const keys=new Set(data.weekly.map(w=>w.weekStart+"|"+w.src));
+    sources.forEach(row=>{ const key=row.weekStart+"|"+row.src; if(row.weekStart===createStart && !keys.has(key)){
+      data.weekly.push(Object.assign({id:uid()},row,{generatedText:generatedFields(row)})); keys.add(key); stats.added++;
+    } });
+  }
+  return stats;
+}
+function suggestedNextPlans(data = DB){
+  const start = addDays(curWeekStart(), 7), end = addDays(start, 6);
+  const rows = [];
+  data.tasks.filter(t=>!t.collab && !taskCompleted(t)).forEach(t=>{
+    const overdue = t.due && daysUntil(t.due)<0;
+    const highActive = t.priority === "高" && t.projectId && data.projects.some(p=>p.id===t.projectId && isActiveProj(p));
+    const nextDue = t.due && t.due>=start && t.due<=end;
+    if(overdue || highActive || nextDue){
+      const src="suggest:task:"+t.id;
+      if(!data.weekly.some(w=>w.src===src && w.weekStart===start)) rows.push({task:t,src,weekStart:start});
+    }
+  });
+  return rows;
+}
+function openSuggestedPlans(){
+  const rows = suggestedNextPlans();
+  if(!rows.length) return;
+  $("#suggestPlanList").innerHTML = rows.map((r,i)=>'<label class="item" style="display:flex;align-items:flex-start;gap:8px"><input class="big" type="checkbox" data-suggest-index="'+i+'" checked><span class="main"><b>'+esc(r.task.title)+'</b><span class="sub">'+(r.task.due?(daysUntil(r.task.due)<0?'逾期 '+(-daysUntil(r.task.due))+' 天':'截止 '+esc(r.task.due)):'未设截止')+(r.task.priority==='高'?' · 高优先':'')+'</span></span></label>').join("");
+  window.__suggestRows = rows;
+  $("#suggestPlanModal").classList.add("open");
+}
+$("#btnSuggestOk").addEventListener("click", ()=>{
+  const rows = window.__suggestRows || [], start = addDays(curWeekStart(), 7);
+  let added=0;
+  rows.forEach((r,i)=>{ const c=document.querySelector('[data-suggest-index="'+i+'"]'); if(!c || !c.checked) return; if(DB.weekly.some(w=>w.src===r.src && w.weekStart===start)) return;
+    DB.weekly.push({id:uid(),line:"业务条线",group:"plan",item:r.task.title,progress:r.task.due?"截止 "+r.task.due:"持续推进",weekStart:start,src:r.src}); added++;
+  });
+  $("#suggestPlanModal").classList.remove("open"); window.__suggestRows=null;
+  if(added){ const ok=save(false); toast(ok?"已加入下周计划 "+added+" 条":"保存失败：下周计划未能写入"); } else toast("未选择新的下周计划");
+});
+document.addEventListener("click", e=>{ if(e.target.closest("[data-close-suggest]") || e.target.id==="suggestPlanModal") $("#suggestPlanModal").classList.remove("open"); });
 $("#btnWeekAuto").addEventListener("click", ()=>{
-  const wr = weekRange();
-  const inWeek = s => s >= wr.start && s <= wr.end;
-  let added = 0;
-  DB.logs.filter(l=>inWeek(l.date) && logHappened(l)).forEach(l=>{
-    const src = "log:" + l.id;
-    const item = (projName(l.projectId)?"【"+projName(l.projectId)+"】":"") + l.content;
-    if(!DB.weekly.some(w=>w.src===src || (w.group==="done" && w.item===item))){
-      DB.weekly.push({ id:uid(), line:"项目条线", group:"done", item, progress:l.date+" "+l.type, weekStart:wr.start, src });
-      added++;
-    }
-  });
-  DB.tasks.filter(t=>t.done && t.doneAt && inWeek(t.doneAt) && !(t.collab && t.collab.execStatus !== "已完成")).forEach(t=>{
-    const src = "task:" + t.id;
-    const item = "完成任务：" + t.title;
-    if(!DB.weekly.some(w=>w.src===src || (w.group==="done" && w.item===item))){
-      DB.weekly.push({ id:uid(), line:"业务条线", group:"done", item, progress: t.collab ? ("完成于 "+t.doneAt+" · 执行人 "+roleName(t.collab.executor)+(t.collab.firstAssignee!==t.collab.executor ? " · 最初接收 "+roleName(t.collab.firstAssignee) : "")) : ("完成于 "+t.doneAt+" · 责任人 "+(t.owner||"")), weekStart:wr.start, src });
-      added++;
-    }
-  });
-  save(); toast(added ? "已汇总生成 "+added+" 条到「本周完成」草稿（只含已发生日志和本周完成任务），请删改定稿" : "本周已发生的日志和已完成任务都汇总过了，没有新增");
+  const stats=syncWeekly(curWeekStart()), ok=save(false);
+  toast((ok?"周报已同步":"周报同步失败，当前内容未能保存")+"：新增 "+stats.added+" 条、更新 "+stats.updated+" 条、移除 "+stats.removed+" 条"+(stats.kept?"；已保留 "+stats.kept+" 条手改或待核对条目，未覆盖或删除":""));
+  if(ok) openSuggestedPlans();
 });
+function changeWeek(offset){ weekOffset=offset; editWeekId=null; $("#btnWeekCancel").click(); renderWeekly(); }
+$("#btnWeekPrev").addEventListener("click", ()=>changeWeek(weekOffset-1));
+$("#btnWeekNext").addEventListener("click", ()=>changeWeek(weekOffset+1));
+$("#btnWeekNow").addEventListener("click", ()=>changeWeek(0));
 let CONV_ROWS = [];
 $("#btnWeekConvert").addEventListener("click", ()=>{
   const plans = weekItems().filter(w=>w.group==="plan");
@@ -1037,21 +1273,68 @@ $("#btnConvOk").addEventListener("click", ()=>{
   save(); toast(added ? "已转任务 "+added+" 条，未设日期的可在任务页补" : "没有勾选可转的计划");
   if(added) gotoPage("tasks");
 });
-function weeklyText(){
-  const wr = weekRange();
-  let out = "泰兴数产个人工作周报（"+wr.start+" 至 "+wr.end+"）\n\n一、本周重点工作完成情况\n";
-  const done = weekItems().filter(w=>w.group==="done"), plan = weekItems().filter(w=>w.group==="plan");
-  out += done.length ? done.map((w,i)=>(i+1)+". ["+w.line+"] "+w.item+(w.progress?"（"+w.progress+"）":"")).join("\n") : "（无）";
-  out += "\n\n二、下周重点工作计划\n";
-  out += plan.length ? plan.map((w,i)=>(i+1)+". ["+w.line+"] "+w.item+(w.progress?"（"+w.progress+"）":"")).join("\n") : "（无）";
-  return out;
+function demoTitle(title){ return title+(MODE==="demo"?"（演示数据）":""); }
+function ensureDemoTitle(text){
+  if(MODE!=="demo") return text;
+  const lines=String(text).split("\n"); if(!lines[0].includes("（演示数据）")) lines[0]+="（演示数据）"; return lines.join("\n");
 }
-$("#btnWeekCopy").addEventListener("click", async ()=>{
-  const txt = weeklyText();
-  try{ await navigator.clipboard.writeText(txt); toast("周报全文已复制，可粘贴到 WPS 或微信"); }
-  catch(e){ const ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); toast("周报全文已复制"); }
+function projectTaskSummary(id){
+  const tasks=DB.tasks.filter(t=>t.projectId===id), done=tasks.filter(taskCompleted).length;
+  return "任务完成 "+done+"/"+tasks.length+"（"+(tasks.length?Math.round(done/tasks.length*100):0)+"%）";
+}
+function completionItems(){
+  const rows=weekItems().filter(w=>w.group==="done").map(w=>Object.assign({},w));
+  const keys=new Set(rows.filter(w=>w.src).map(w=>w.src));
+  generatedSources().forEach(w=>{ if(w.weekStart===curWeekStart() && !keys.has(w.src)){ rows.push(w); keys.add(w.src); } });
+  return rows;
+}
+function nextPlanLines(){
+  const wr=weekRange(), start=addDays(wr.start,7), end=addDays(wr.end,7);
+  const plans=weekItems().filter(w=>w.group==="plan"), ids=new Set(plans.map(w=>w.id));
+  const lines=plans.filter(w=>!DB.tasks.some(t=>t.fromWeekId===w.id)).map(w=>w.item+(w.progress?"（"+w.progress+"）":""));
+  DB.tasks.filter(t=>!taskCompleted(t) && ((t.due && t.due>=start && t.due<=end) || ids.has(t.fromWeekId))).forEach(t=>{
+    lines.push(t.title+"（"+(t.due?fmtMD(t.due)+"到期":"未设截止")+(t.owner?"，"+t.owner:"")+"）");
+  });
+  return lines;
+}
+function weeklyText(){
+  const wr=weekRange(), rows=completionItems(), active=DB.projects.filter(isActiveProj);
+  const risks=DB.projects.filter(p=>p.status==="预警" || p.risk);
+  const over=DB.tasks.filter(t=>!taskCompleted(t) && t.due && daysUntil(t.due)<0);
+  const L=[demoTitle("泰兴数产个人工作周报"),wr.start+" 至 "+wr.end,"","一、重点工作完成情况（按项目）"];
+  const groups=new Map();
+  rows.forEach(w=>{
+    const source=w.src && generatedSources().get(w.src);
+    const pid=w.projectId || (source && source.projectId) || "";
+    const key=projName(pid)||"未关联项目";
+    if(!groups.has(key)) groups.set(key,[]); groups.get(key).push(w.item+(w.progress?"（"+w.progress+"）":""));
+  });
+  if(!groups.size) L.push("暂无记录。");
+  groups.forEach((items,name)=>{ L.push("【"+name+"】"); items.forEach(x=>L.push("· "+x)); });
+  L.push("","二、重点项目推进");
+  if(!active.length) L.push("暂无在推项目。");
+  active.forEach(p=>L.push("· "+p.name+"："+p.status+"，手填进度 "+(p.progress||0)+"%；"+projectTaskSummary(p.id)));
+  L.push("","三、问题及风险");
+  if(!risks.length && !over.length) L.push("暂无已记录的问题及风险。");
+  risks.forEach(p=>L.push("· "+p.name+"："+(p.risk||"状态预警")));
+  over.forEach(t=>L.push("· "+t.title+"：逾期 "+(-daysUntil(t.due))+" 天"+(t.owner?"，责任人 "+t.owner:"")));
+  L.push("","四、下周计划"); const plans=nextPlanLines(); if(!plans.length) L.push("暂无记录。"); plans.forEach(x=>L.push("· "+x));
+  L.push("","五、需要协调事项");
+  const warns=DB.projects.filter(p=>p.status==="预警");
+  if(!over.length && !warns.length) L.push("暂无已记录的需协调事项。");
+  over.forEach(t=>L.push("· 逾期任务："+t.title+(t.owner?"（"+t.owner+"）":"")));
+  warns.forEach(p=>L.push("· 预警项目："+p.name+(p.risk?"，"+p.risk:"")));
+  return L.join("\n");
+}
+$("#btnWeekCopy").addEventListener("click", ()=>copyTextSafe(weeklyText(),"周报全文已复制，可粘贴到 WPS 或微信"));
+$("#btnWeekReport").addEventListener("click", ()=>{ $("#weekReportText").value=weeklyText(); $("#weekReportModal").classList.add("open"); });
+$("#btnReportCopy").addEventListener("click", ()=>copyTextSafe(ensureDemoTitle($("#weekReportText").value),"汇报全文已复制"));
+document.addEventListener("click",e=>{ if(e.target.closest("[data-close-report]") || e.target.id==="weekReportModal") $("#weekReportModal").classList.remove("open"); });
+$("#btnWeekPrint").addEventListener("click", ()=>{
+  const text=weeklyText(), win=window.open("","_blank"); if(!win){ toast("请允许打开打印窗口后重试"); return; }
+  win.document.open(); win.document.write('<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>'+esc(text.split("\n")[0])+'</title></head><body><pre style="white-space:pre-wrap;font:15px/1.8 sans-serif">'+esc(text)+'</pre></body></html>');
+  win.document.close(); win.focus(); win.print();
 });
-$("#btnWeekPrint").addEventListener("click", ()=>window.print());
 
 /* ============ 日历 ============ */
 let calCursor = new Date(); calCursor.setDate(1);
@@ -1081,8 +1364,8 @@ function renderCalendar(){
   const ls = DB.logs.filter(l=>l.date===calSel), ts2 = DB.tasks.filter(t=>!t.collab && t.due===calSel), ps = DB.projects.filter(p=>p.start===calSel||p.end===calSel);
   let body = "";
   ls.forEach(l=>{ body += '<div class="item"><div class="main"><div><span class="tag">'+esc(l.type)+'</span>'+esc(l.content)+'</div><div class="sub">'+esc(l.time||"")+(projName(l.projectId)?' · '+esc(projName(l.projectId)):'')+'</div></div></div>'; });
-  ts2.forEach(t=>{ body += '<div class="item"><input type="checkbox" class="big" data-complete-task="'+t.id+'" '+(t.done?"checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+dueLabel(t)+'</div><div class="sub">任务 · '+esc(t.owner||"未填")+'</div></div></div>'; });
-  ps.forEach(p=>{ body += '<div class="item"><div class="main"><div><span class="tag green">项目节点</span>'+esc(p.name)+'</div><div class="sub">'+(p.start===calSel?"开始日":"计划完成日")+' · '+statusTagText(p.status)+'</div></div></div>'; });
+  ts2.forEach(t=>{ body += '<div class="item"><input type="checkbox" class="big" data-complete-task="'+esc(t.id)+'" '+(t.done?"checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+dueLabel(t)+'</div><div class="sub">任务 · '+esc(t.owner||"未填")+'</div></div></div>'; });
+  ps.forEach(p=>{ body += '<div class="item"><div class="main"><div><span class="tag green">项目节点</span>'+esc(p.name)+'</div><div class="sub">'+(p.start===calSel?"开始日":"计划完成日")+' · '+esc(statusTagText(p.status))+'</div></div></div>'; });
   $("#calDayBody").innerHTML = body || '<div class="empty">该日无记录，可在下方补记，或去工作日志页添加</div>';
 }
 function statusTagText(s){ return s||""; }
@@ -1090,11 +1373,11 @@ $("#calGrid").addEventListener("click", e=>{ const c = e.target.closest("[data-c
 $("#calPrev").addEventListener("click", ()=>{ calCursor.setMonth(calCursor.getMonth()-1); renderCalendar(); });
 $("#calNext").addEventListener("click", ()=>{ calCursor.setMonth(calCursor.getMonth()+1); renderCalendar(); });
 $("#calTodayBtn").addEventListener("click", ()=>{ calCursor = new Date(); calCursor.setDate(1); calSel = todayStr(); renderCalendar(); });
-$("#btnCalAddLog").addEventListener("click", ()=>{ $("#logDate").value = calSel; $("#logViewDate").value = calSel; gotoPage("logs"); $("#logContent").focus(); });
+$("#btnCalAddLog").addEventListener("click", ()=>{ $("#btnLogCancel").click(); $("#logDate").value = calSel; $("#logViewDate").value = calSel; markTouched(["logDate"]); gotoPage("logs"); renderLogs(); openFormModal("logs"); $("#logContent").focus(); });
 
 /* ============ 全局：导出 / 导入 / 演示数据 / 清空 / 搜索 / 快速记 ============ */
 $("#btnExport").addEventListener("click", ()=>{
-  const data = JSON.stringify(Object.assign({ _app: "taixing-workbench", _mode: MODE }, DB), null, 2);
+  const data = JSON.stringify(Object.assign({}, DB, { _app: "taixing-workbench", _mode: MODE, _brief: storeGet("ts_brief_draft_" + (MODE || "real")) || "" }), null, 2);
   const blob = new Blob([data], {type:"application/json"});
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
   a.download = "个人工作台备份_" + todayStr().replace(/-/g,"") + ".json"; a.click();
@@ -1104,19 +1387,22 @@ $("#btnExport").addEventListener("click", ()=>{
 $("#btnImport").addEventListener("click", ()=>$("#fileImport").click());
 $("#fileImport").addEventListener("change", e=>{
   const f = e.target.files[0]; e.target.value = ""; if(!f) return;
+  const importMode = MODE;
   const rd = new FileReader();
   rd.onload = ()=>{
     try{
+      if(MODE !== importMode) throw new Error("读取期间模式已切换，请重新选择文件");
       const p = JSON.parse(rd.result);
-      if(!p || !Array.isArray(p.logs) || !Array.isArray(p.tasks) || !Array.isArray(p.projects)) throw new Error("bad");
-      const hasCollab = (p.tasks || []).some(t=> t && t.collab);
+      const candidate = normalizeBackup(p);
       if(p._mode && p._mode !== MODE){ toast("这是" + (p._mode === "demo" ? "演示" : "正式") + "模式的备份，请先切换到对应模式再导入"); return; }
+      const hasCollab = candidate.tasks.some(t=> t.collab);
       if(hasCollab && MODE !== "demo"){ toast("该备份包含协作演示任务，不能导入正式区；请先切换到演示模式再导入"); return; }
       if(!confirm("导入将覆盖当前全部数据（现有 "+DB.logs.length+" 条日志、"+DB.tasks.length+" 条任务），确认导入？")) return;
-      DB = { logs:p.logs||[], tasks:p.tasks||[], projects:p.projects||[], weekly:p.weekly||[], memos:p.memos||[] };
-      save(); toast("导入成功："+DB.logs.length+" 条日志、"+DB.tasks.length+" 条任务、"+DB.projects.length+" 个项目");
-    }catch(err){ toast("导入失败：文件格式不对，现有数据未改动"); }
+      commitImported(candidate);
+      toast("导入成功："+DB.logs.length+" 条日志、"+DB.tasks.length+" 条任务、"+DB.projects.length+" 个项目");
+    }catch(err){ toast("导入失败："+(err && err.message ? err.message : "文件格式不对")+"，现有数据未改动"); }
   };
+  rd.onerror = ()=>toast("导入失败：文件读取失败，现有数据未改动");
   rd.readAsText(f);
 });
 $("#btnClear").addEventListener("click", ()=>{
@@ -1210,15 +1496,20 @@ $("#btnDemo").addEventListener("click", ()=>{
   setMode("demo"); toast("已切换到演示模式（正式记录不受影响）"); gotoPage("today");
 });
 /* 全局搜索 */
+function taskSearchStatus(t){
+  const d=t.due?daysUntil(t.due):null;
+  return [t.collab?t.collab.execStatus:(taskCompleted(t)?"已完成":"进行中 在办 执行中"),t.collab && t.collab.transfer?"转交待处理":"",taskCompleted(t)?"":!t.due?"未设截止":d<0?"逾期":d===0?"今天到期":d<=3?"临期 即将到期 三日内到期":""].join(" ");
+}
 $("#globalSearch").addEventListener("input", e=>{
   const kw = e.target.value.trim(); const box = $("#searchResults");
   if(kw.length < 1){ box.style.display = "none"; return; }
   const hits = [];
-  DB.logs.forEach(l=>{ if((l.content+l.related+projName(l.projectId)).includes(kw)) hits.push({ kind:"日志", id:l.id, page:"logs", html:'<span class="tag">'+esc(l.type)+'</span>'+esc(l.content), sub:l.date+" "+(l.time||""), page:"logs" }); });
-  DB.tasks.forEach(t=>{ if((t.title+(t.owner||"")+projName(t.projectId)).includes(kw)) hits.push({ kind:"任务", id:t.id, page:"tasks", html:esc(t.title)+" "+dueLabel(t), sub:"责任人 "+(t.owner||"未填"), page:"tasks" }); });
-  DB.projects.forEach(p=>{ if((p.name+(p.owner||"")).includes(kw)) hits.push({ kind:"项目", id:p.id, page:"projects", html:esc(p.name)+" "+statusTag(p.status), sub:"进度 "+(p.progress||0)+"%", page:"projects" }); });
-  DB.weekly.forEach(w=>{ if(w.item.includes(kw)) hits.push({ kind:"周报", id:w.id, page:"weekly", html:'<span class="tag">'+esc(w.line)+'</span>'+esc(w.item), sub:w.group==="done"?"本周完成":"下周计划", page:"weekly" }); });
-  $("#searchBody").innerHTML = hits.length ? hits.slice(0,30).map(hh=>'<div class="item"><div class="main"><div><span class="tag gray">'+hh.kind+'</span>'+hh.html+'</div><div class="sub">'+esc(hh.sub)+'</div></div><div class="ops"><button class="btn small" data-open-hit="'+hh.kind+'|'+hh.id+'">打开</button></div></div>').join("") : '<div class="empty">没有搜到「'+esc(kw)+'」相关内容</div>';
+  DB.logs.forEach(l=>{ if([l.content,l.related,projName(l.projectId),l.type,l.date,l.time].join(" ").includes(kw)) hits.push({ kind:"日志", id:l.id, page:"logs", html:'<span class="tag">'+esc(l.type)+'</span>'+esc(l.content), sub:l.date+" "+(l.time||""), page:"logs" }); });
+  DB.tasks.forEach(t=>{ if([t.title,t.owner,projName(t.projectId),taskSearchStatus(t),t.priority,t.priority+"优先级",t.due].join(" ").includes(kw)) hits.push({ kind:"任务", id:t.id, page:"tasks", html:esc(t.title)+" "+dueLabel(t), sub:"责任人 "+(t.owner||"未填"), page:"tasks" }); });
+  DB.projects.forEach(p=>{ if([p.name,p.owner,p.status,p.risk].join(" ").includes(kw)) hits.push({ kind:"项目", id:p.id, page:"projects", html:esc(p.name)+" "+statusTag(p.status), sub:"进度 "+(p.progress||0)+"%", page:"projects" }); });
+  DB.weekly.forEach(w=>{ if([w.item,w.line,w.progress].join(" ").includes(kw)) hits.push({ kind:"周报", id:w.id, page:"weekly", html:'<span class="tag">'+esc(w.line)+'</span>'+esc(w.item), sub:w.group==="done"?"本周完成":"下周计划", page:"weekly" }); });
+  DB.memos.forEach(m=>{ if([m.content,m.when].join(" ").includes(kw)) hits.push({kind:"备忘",id:m.id,html:esc(m.content),sub:m.when||""}); });
+  $("#searchBody").innerHTML = hits.length ? hits.slice(0,30).map(hh=>'<div class="item"><div class="main"><div><span class="tag gray">'+hh.kind+'</span>'+hh.html+'</div><div class="sub">'+esc(hh.sub)+'</div></div><div class="ops"><button class="btn small" data-open-hit="'+hh.kind+'|'+esc(hh.id)+'">打开</button></div></div>').join("") : '<div class="empty">没有搜到「'+esc(kw)+'」相关内容</div>';
   box.style.display = "block";
 });
 $("#closeSearch").addEventListener("click", ()=>{ $("#searchResults").style.display = "none"; $("#globalSearch").value = ""; });
@@ -1237,14 +1528,23 @@ function highlightEl(sel){
 function jumpToRecord(kind, id){
   if(kind==="日志"){ const l = DB.logs.find(x=>x.id===id); if(!l) return;
     gotoPage("logs"); $("#logKeyword").value = ""; $("#logFilterType").value = ""; $("#logViewDate").value = l.date; renderLogs();
-    highlightEl('[data-lid="'+id+'"]');
+    highlightEl('[data-lid="'+CSS.escape(String(id))+'"]');
   } else if(kind==="任务"){ const t = DB.tasks.find(x=>x.id===id); if(!t) return;
     gotoPage("tasks"); $("#taskFilterStatus").value = "all"; $("#taskFilterPri").value = ""; $("#taskFilterOwner").value = ""; renderTasks();
-    highlightEl('[data-tid="'+id+'"]');
+    highlightEl('[data-tid="'+CSS.escape(String(id))+'"]');
   } else if(kind==="项目"){ if(!DB.projects.some(x=>x.id===id)) return;
     gotoPage("projects"); selProjId = id; renderProjects();
-    highlightEl('[data-proj-sel="'+id+'"]');
-  } else if(kind==="周报"){ gotoPage("weekly"); highlightEl('[data-wid="'+id+'"]'); }
+    highlightEl('[data-proj-sel="'+CSS.escape(String(id))+'"]');
+  } else if(kind==="周报"){
+    const w=DB.weekly.find(x=>x.id===id); if(!w) return;
+    const start=weekStartForDate(w.weekStart);
+    if(start){ const current=new Date(); const base=weekStartForDate(dstr(current)); weekOffset=Math.round((new Date(start+"T00:00:00")-new Date(base+"T00:00:00"))/604800000); }
+    gotoPage("weekly"); renderWeekly();
+    if(w.weekStart==="__legacy__") highlightEl('[data-legacy-assign="'+CSS.escape(String(id))+'"]');
+    else highlightEl('[data-wid="'+CSS.escape(String(id))+'"]');
+  } else if(kind==="备忘"){
+    gotoPage("today"); $("#homeMemos").open=true; highlightEl('[data-mid="'+CSS.escape(String(id))+'"]');
+  }
 }
 document.addEventListener("click", e=>{
   const b = e.target.closest("[data-open-hit]");
@@ -1289,7 +1589,7 @@ $("#qSave").addEventListener("click", ()=>{
   const kind = $("#qKind").value, pid = $("#qProject").value || "";
   let msg = "已保存";
   if(kind==="log"){
-    DB.logs.push({ id:uid(), date: $("#qDate").value || todayStr(), time: $("#qTime").value || "", type: $("#qType").value, content: raw, projectId: pid, source:"手动", confirmed: $("#qType").value==="会议" ? false : undefined });
+    DB.logs.push({ id:uid(), date: $("#qDate").value || todayStr(), time: $("#qTime").value || "", type: $("#qType").value, content: raw, projectId: pid, taskId:"", source:"手动", confirmed: $("#qType").value==="会议" ? false : undefined });
   } else if(kind==="task"){
     DB.tasks.push({ id:uid(), title: raw, owner: $("#qOwner").value.trim(), due: $("#qDate").value || "", priority: $("#qPri").value, projectId: pid, done:false, created: todayStr() });
     if(window.__pendingMemo){ DB.memos = DB.memos.filter(x=>x.id!==window.__pendingMemo); window.__pendingMemo = null; msg = "备忘已转成任务"; }
@@ -1297,7 +1597,7 @@ $("#qSave").addEventListener("click", ()=>{
     DB.memos.push({ id:uid(), content: raw, when: todayStr()+" "+nowHM() });
   }
   touchProject(pid);
-  save(); closeQuick(); toast(msg);
+  const quickOk=save(); closeQuick(); toast(quickOk?msg:"保存失败：记录未能写入");
 });
 
 
@@ -1419,6 +1719,7 @@ wireSmart($("#logContent"), $("#logSmartLive"), R=>{
   const typeMap = {"材料撰写":"项目推进","沟通协调":"项目推进","现场工作":"项目推进","工作记录":"项目推进"};
   setAuto($("#logType"), typeMap[R.type] || R.type);
   setAuto($("#logProject"), R.projectId);
+  fillLogTaskSelect();
 });
 wireSmart($("#taskTitle"), $("#taskSmartLive"), R=>{
   setAuto($("#taskDue"), R.hasDate ? R.date : "");
@@ -1430,10 +1731,11 @@ wireSmart($("#taskTitle"), $("#taskSmartLive"), R=>{
 function nowHM(){ const n = new Date(); return pad(n.getHours())+":"+pad(n.getMinutes()); }
 function logHappened(l){ const T = todayStr(); if(l.date > T) return false; if(l.type === "会议") return l.confirmed === true; if(l.date < T) return true; return !l.time || l.time <= nowHM(); }
 function meetMigKey(){ return (MODE === "demo" ? DEMO_KEY : KEY) + "_meetmig"; }
-function migrateMeetings(){
-  if(storeGet(meetMigKey()) === "1") return;
-  DB.logs.forEach(l=>{ if(l.type==="会议" && l.confirmed===undefined) l.confirmed = l.date < todayStr(); });
-  storeSet(meetMigKey(), "1");
+function migrateMeetings(target = DB, persist = true){
+  if(storeGet(meetMigKey()) === "1") return false;
+  target.logs.forEach(l=>{ if(l.type==="会议" && l.confirmed===undefined) l.confirmed = l.date < todayStr(); });
+  if(persist) storeSet(meetMigKey(), "1");
+  return true;
 }
 function isActiveProj(p){ return ["推进中","预警","待验收"].indexOf(p.status) >= 0; }
 
@@ -1443,33 +1745,37 @@ function buildBrief(){
   const rg = weekRange(), start = rg.start, end = rg.end;
   const inW = d => d && d >= start && d <= end;
   const logsW = DB.logs.filter(l=>inW(l.date) && logHappened(l));
-  const doneW = DB.tasks.filter(t=>t.done && t.doneAt && inW(t.doneAt) && !(t.collab && t.collab.execStatus !== "已完成"));
+  const doneW = DB.tasks.filter(t=>taskCompleted(t) && t.doneAt && inW(t.doneAt));
   const mine = weekItems();
   const wkDone = mine.filter(w=>w.group==="done"), wkPlan = mine.filter(w=>w.group==="plan");
-  const over = DB.tasks.filter(t=>!t.done && t.due && daysUntil(t.due) < 0);
+  const pending=DB.tasks.filter(t=>!taskCompleted(t));
+  const over = pending.filter(t=>t.due && daysUntil(t.due) < 0);
   const nStart = addDays(start, 7), nEnd = addDays(end, 7);
   const nextTasks = DB.tasks.filter(t=>!t.done && t.due && t.due >= nStart && t.due <= nEnd);
   const act = DB.projects.filter(isActiveProj);
   const warnP = act.filter(p=>p.status==="预警" || p.risk);
   const L = [];
-  L.push("泰兴数产 · 工作简报");
+  L.push(demoTitle("泰兴数产 · 工作简报"));
   L.push(fmtMD(start) + " 至 " + fmtMD(end));
   L.push("");
   L.push("\u3010本周重点\u3011");
   if(warnP.length) warnP.slice(0,2).forEach(p=>L.push("· " + p.name + "：" + (p.risk || "状态预警") + "（进度 " + (p.progress||0) + "%）"));
+  const completed=completionItems();
+  completed.slice(0,8).forEach(w=>L.push("· "+w.item));
+  if(completed.length>8) L.push("· 另有 "+(completed.length-8)+" 条完成事项，详见周报。");
   L.push("· 本周完成任务 " + doneW.length + " 项，记录已发生工作 " + logsW.length + " 条");
   if(over.length) L.push("· 逾期未完成 " + over.length + " 项，最久逾期 " + Math.max.apply(null, over.map(t=>-daysUntil(t.due))) + " 天，需优先处理");
   if(!warnP.length && !over.length) L.push("· 本周无预警项目、无逾期任务");
   L.push("");
   L.push("\u3010总体情况\u3011");
-  L.push("本周完成任务 " + doneW.length + " 项（按实际完成日期统计），周报完成事项 " + wkDone.length + " 项，已发生工作记录 " + logsW.length + " 条；在推项目 " + act.length + " 个。");
+  L.push("本周完成任务 " + doneW.length + " 项（按实际完成日期统计），周报完成事项 " + wkDone.length + " 项，已发生工作记录 " + logsW.length + " 条；任务总量 "+DB.tasks.length+" 项，当前未完成 "+pending.length+" 项，逾期 "+over.length+" 项；在推项目 " + act.length + " 个。");
   L.push("");
   L.push("\u3010项目进展\u3011");
   if(!act.length) L.push("暂无在推项目。");
   act.forEach(p=>{
     const pl = logsW.filter(l=>l.projectId===p.id).length;
     const pd = doneW.filter(t=>t.projectId===p.id).length;
-    L.push("· " + p.name + "（" + p.status + " · " + (p.progress||0) + "%）：本周动态 " + pl + " 条，完成任务 " + pd + " 项" + (p.risk ? "；风险：" + p.risk : ""));
+    L.push("· " + p.name + "（" + p.status + " · 手填进度 " + (p.progress||0) + "% · "+projectTaskSummary(p.id)+"）：本周动态 " + pl + " 条，完成任务 " + pd + " 项" + (p.risk ? "；风险：" + p.risk : ""));
   });
   L.push("");
   L.push("\u3010风险与逾期\u3011");
@@ -1479,9 +1785,9 @@ function buildBrief(){
   L.push("");
   L.push("\u3010下周计划\u3011");
   L.push("（下周 " + fmtMD(nStart) + " 至 " + fmtMD(nEnd) + "）");
-  if(!wkPlan.length && !nextTasks.length) L.push("暂无记录。");
-  wkPlan.forEach(w=>L.push("· " + w.item + (w.progress ? "（" + w.progress + "）" : "")));
-  nextTasks.forEach(t=>L.push("· " + t.title + "（" + fmtMD(t.due) + "到期" + (t.owner ? "，" + t.owner : "") + "）"));
+  const nextLines=nextPlanLines();
+  if(!nextLines.length) L.push("暂无记录。");
+  nextLines.forEach(x=>L.push("· "+x));
   L.push("");
   L.push("\u3010需协调事项\u3011");
   const coord = [];
@@ -1503,7 +1809,7 @@ $("#btnBrief").addEventListener("click", ()=>{
   const fresh = buildBrief();
   if(draft && draft !== fresh){
     if(!confirm("有一份你修改过的简报草稿，点「确定」用最新数据重新生成（会覆盖草稿），点「取消」打开旧草稿继续修改")){
-      $("#briefText").value = draft; $("#briefModal").classList.add("open"); return;
+      $("#briefText").value = ensureDemoTitle(draft); $("#briefModal").classList.add("open"); return;
     }
   }
   $("#briefText").value = fresh; storeSet(key, fresh);
@@ -1512,7 +1818,7 @@ $("#btnBrief").addEventListener("click", ()=>{
 $("#briefText").addEventListener("input", ()=>{ storeSet("ts_brief_draft_" + (MODE || "real"), $("#briefText").value); });
 $("#btnBriefClose").addEventListener("click", ()=>{ $("#briefModal").classList.remove("open"); refreshBriefBtn(); });
 $("#briefModal").addEventListener("click", e=>{ if(e.target.id==="briefModal") $("#briefModal").classList.remove("open");});
-$("#btnBriefCopy").addEventListener("click", ()=>copyTextSafe($("#briefText").value, "简报已复制，可粘贴到微信或 WPS"));
+$("#btnBriefCopy").addEventListener("click", ()=>copyTextSafe(ensureDemoTitle($("#briefText").value), "简报已复制，可粘贴到微信或 WPS"));
 
 /* ============ 日历提醒（.ics）：借苹果日历实现系统通知 ============ */
 function icsEsc(t){ return String(t||"").replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n"); }
@@ -1532,7 +1838,14 @@ function exportIcs(){
       "DESCRIPTION:"+icsEsc("责任人："+(t.owner||"未填")+(projName(t.projectId)?" · 项目："+projName(t.projectId):"")+" · 优先级："+t.priority+(over?" · 原截止："+t.due:""))]
       .concat(alarms).concat(["END:VEVENT"]).join("\r\n"));
   });
-  DB.logs.filter(l=>l.type==="会议" && l.date && l.time && l.date>=todayStr()).forEach(l=>{
+  const now = new Date(), today = todayStr(), nowMin = now.getHours()*60 + now.getMinutes();
+  DB.logs.filter(l=>{
+    if(l.type!=="会议" || !l.date || !l.time) return false;
+    if(l.date > today) return true;
+    if(l.date < today) return false;
+    const bits = l.time.split(":").map(Number);
+    return (bits[0]||0)*60 + (bits[1]||0) >= nowMin;
+  }).forEach(l=>{
     const d = l.date.replace(/-/g,""), tm = l.time.replace(":","") + "00";
     evs.push(["BEGIN:VEVENT","UID:log-"+l.id+"@ts-workbench","DTSTAMP:"+icsStamp(),
       "DTSTART:"+d+"T"+tm,"DURATION:PT1H",
@@ -1546,7 +1859,7 @@ function exportIcs(){
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
   a.download = "工作台提醒_" + todayStr().replace(/-/g,"") + ".ics"; a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href), 3000);
-  toast("已生成 "+evs.length+" 条日历提醒，用「文件」打开并添加到日历即可生效");
+  toast("已生成 "+evs.length+" 条日历提醒，用「文件」打开并添加到日历即可生效。任务完成或删除后，日历里已导入的旧条目需手动删除。");
 }
 $("#btnIcs").addEventListener("click", exportIcs);
 $("#btnIcsToday").addEventListener("click", exportIcs);
@@ -1559,7 +1872,7 @@ function refreshModeUI(){
   if(bd) bd.textContent = MODE === "demo" ? "已在演示模式" : "切换到演示模式";
 }
 function resetTransientState(){
-  editLogId = null; editTaskId = null; editProjId = null; editWeekId = null;
+  editLogId = null; editTaskId = null; editProjId = null; editWeekId = null; taskDetailId=null; weekOffset=0;
   SMART = null; window.__pendingMemo = null; CONV_ROWS = [];
   $$(".home-fold").forEach(d=>d.open=false);
   $$(".modal-bg").forEach(m=>m.classList.remove("open"));
@@ -1578,7 +1891,7 @@ function resetTransientState(){
   $("#weekFormTitle").textContent = "添加一条周报事项"; $("#btnWeekSave").textContent = "添加一条"; $("#btnWeekCancel").style.display = "none";
   $("#weekItem").value = ""; $("#weekProgress").value = "";
   const qc = $("#qContent"); if(qc) qc.value = "";
-  const DEF = { logDate: todayStr(), logTime: "", logType: "会议", logProject: "", logKeyword: "", logFilterType: "",
+  const DEF = { logDate: todayStr(), logTime: "", logType: "会议", logProject: "", logTask: "", logKeyword: "", logFilterType: "",
     taskPri: "中", taskProject: "", taskFilterStatus: "all", taskFilterPri: "", taskFilterOwner: "",
     projStart: "", projEnd: "", weekGroup: "plan",
     qKind: "log", qDate: todayStr(), qTime: "", qType: "项目推进", qOwner: "", qPri: "中", qProject: "" };
@@ -1602,6 +1915,20 @@ $("#btnStartReal").addEventListener("click", ()=>{ setMode("real"); $("#startMod
 $("#btnToReal").addEventListener("click", ()=>{ setMode("real"); toast("已切换到正式使用，演示数据保留在演示区"); gotoPage("today"); });
 
 /* ============ 表单弹层化与项目详情 ============ */
+let taskDetailId=null;
+function relatedLogsHtml(id){
+  const logs=DB.logs.filter(l=>l.taskId===id).slice().sort((a,b)=>(b.date+(b.time||"")).localeCompare(a.date+(a.time||"")));
+  return '<div class="csec"><b>关联日志（'+logs.length+'）</b>'+ (logs.length?logs.map(l=>'<div class="item"><div class="main"><div>'+esc(l.content)+'</div><div class="sub">'+esc(l.date)+' '+esc(l.time||'')+' · '+esc(l.type)+'</div></div><button class="btn small" data-related-log="'+esc(l.id)+'">查看</button></div>').join(''):'<div class="sub">暂无关联日志</div>')+'</div>';
+}
+function renderTaskDetail(){
+  const t=DB.tasks.find(t=>t.id===taskDetailId); if(!t){ $("#taskDetailModal").classList.remove("open"); taskDetailId=null; return; }
+  $("#taskDetailBody").innerHTML='<h3>'+esc(t.title)+'</h3><div class="sub">'+esc(t.owner||"未填责任人")+' · '+esc(taskSearchStatus(t))+(projName(t.projectId)?' · '+esc(projName(t.projectId)):'')+'</div><div class="sub">截止：'+esc(t.due||"未设截止")+'</div>'+relatedLogsHtml(t.id);
+}
+document.addEventListener("click",e=>{
+  const task=e.target.closest("[data-task-open]"); if(task){ taskDetailId=task.dataset.taskOpen; renderTaskDetail(); $("#taskDetailModal").classList.add("open"); }
+  if(e.target.closest("[data-close-task-detail]") || e.target.id==="taskDetailModal"){ $("#taskDetailModal").classList.remove("open"); taskDetailId=null; }
+  const log=e.target.closest("[data-related-log]"); if(log){ $("#taskDetailModal").classList.remove("open"); $("#collabModal").classList.remove("open"); jumpToRecord("日志",log.dataset.relatedLog); }
+});
 const FORM_MODALS = {};
 function wrapForm(page, key, label){
   const form = document.querySelector("#page-"+page+" .form");
@@ -1633,7 +1960,7 @@ document.addEventListener("click", e=>{ const b = e.target.closest("[data-open-f
 function openProjDetail(){
   const p = DB.projects.find(x=>x.id===selProjId); if(!p) return;
   $("#pdTitle").textContent = p.name;
-  $("#pdMeta").textContent = p.status + " · 负责人 " + (p.owner||"未填") + " · 进度 " + (p.progress||0) + "%" + (p.risk ? " · 风险：" + p.risk : "") + (p.updatedAt ? " · 最近更新 " + fmtDate(p.updatedAt) : "");
+  $("#pdMeta").textContent = p.status + " · 负责人 " + (p.owner||"未填") + " · 进度 " + (p.progress||0) + "% · "+projectTaskSummary(p.id) + (p.risk ? " · 风险：" + p.risk : "") + (p.updatedAt ? " · 最近更新 " + fmtDate(p.updatedAt) : "");
   $("#projDetailModal").classList.add("open");
 }
 $("#btnPdClose").addEventListener("click", ()=>$("#projDetailModal").classList.remove("open"));
@@ -1656,13 +1983,13 @@ if(!ROLE_NAMES[ROLE]) ROLE = "me";
 function roleName(k){ return ROLE_NAMES[k] || k || ""; }
 function stampNow(){ const d = new Date(); const p = n => String(n).padStart(2, "0"); return p(d.getMonth()+1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()); }
 function dueChip(t){
-  if(t.collab && t.collab.execStatus === "已完成") return '<span class="tag gray">' + (t.due ? fmtDate(t.due) : "未设截止") + '</span>';
+  if(t.collab && t.collab.execStatus === "已完成") return '<span class="tag gray">' + (t.due ? esc(fmtDate(t.due)) : "未设截止") + '</span>';
   if(!t.due) return '<span class="tag gray">未设截止</span>';
   const d = daysUntil(t.due);
   if(d < 0) return '<span class="tag red">逾期 ' + (-d) + ' 天</span>';
   if(d === 0) return '<span class="tag red">今天到期</span>';
   if(d <= 2) return '<span class="tag yellow">临期 · ' + d + ' 天后</span>';
-  return '<span class="tag gray">' + fmtDate(t.due) + '</span>';
+  return '<span class="tag gray">' + esc(fmtDate(t.due)) + '</span>';
 }
 function collabVisible(t, role){
   if(!t.collab) return role === "me";
@@ -1682,9 +2009,9 @@ function collabInboxFor(role){
 }
 function collabRowHtml(t){
   const c = t.collab;
-  let chips = '<span class="ctag">' + c.execStatus + '</span> ' + dueChip(t);
+  let chips = '<span class="ctag">' + esc(c.execStatus) + '</span> ' + dueChip(t);
   if(c.transfer) chips += ' <span class="ctag warn">转交待处理</span>';
-  return '<div class="item" data-tid="' + t.id + '"><div class="main"><div>' + esc(t.title) + ' ' + priTag(t.priority) + ' ' + chips + '</div><div class="sub">交办：' + roleName(c.assigner) + ' · 当前执行：' + roleName(c.executor) + (t.due ? ' · 截止 ' + esc(t.due) : ' · 未设截止') + '</div></div><div class="ops"><button class="btn small" data-collab-open="' + t.id + '">详情</button></div></div>';
+  return '<div class="item" data-tid="' + esc(t.id) + '"><div class="main"><div>' + esc(t.title) + ' ' + priTag(t.priority) + ' ' + chips + '</div><div class="sub">交办：' + esc(roleName(c.assigner)) + ' · 当前执行：' + esc(roleName(c.executor)) + (t.due ? ' · 截止 ' + esc(t.due) : ' · 未设截止') + '</div></div><div class="ops"><button class="btn small" data-collab-open="' + esc(t.id) + '">详情</button></div></div>';
 }
 function renderCollabBar(){
   const bar = $("#collabBar"); if(!bar) return;
@@ -1704,9 +2031,11 @@ renderTasks = function(){
   const stFilter = $("#taskFilterStatus") ? $("#taskFilterStatus").value : "active";
   const inbox = stFilter === "done" ? [] : collabInboxFor(ROLE);
   const inboxIds = new Set(inbox.map(t=>t.id));
+  const logTaskValue = $("#logTask").value;
   DB.tasks = all.filter(t=> collabVisible(t, ROLE) && !inboxIds.has(t.id));
   _renderTasksBase();
   DB.tasks = all;
+  fillLogTaskSelect(logTaskValue);
   const vis = all.filter(t=> collabVisible(t, ROLE));
   const tcEl = $("#taskCount");
   if(tcEl) tcEl.textContent = "在办 " + vis.filter(t=>!t.done).length + " · 逾期 " + vis.filter(t=>taskState(t)==="overdue").length + " · 已完成 " + vis.filter(t=>t.done).length + " · 共 " + vis.length;
@@ -1721,7 +2050,7 @@ function snapBegin(){ snapGen++; document.documentElement.classList.add("noanim"
 function snapEnd(){ const g = snapGen; requestAnimationFrame(()=>requestAnimationFrame(()=>{ if(g === snapGen) document.documentElement.classList.remove("noanim"); })); }
 setMode = function(m){ snapBegin(); _setModeBase(m); closeCollabUI(); snapEnd(); renderCollabBar(); };
 let pendingHL = null, hlTimer = null;
-function applyPendingHL(){ if(!pendingHL) return; const id = pendingHL; pendingHL = null; const el = document.querySelector('#page-tasks [data-tid="' + id + '"]'); if(el){ el.classList.add("hlflash"); try{ el.scrollIntoView({ block: "nearest" }); }catch(e){} setTimeout(()=>{ el.classList.remove("hlflash"); }, 6000); } }
+function applyPendingHL(){ if(!pendingHL) return; const id = pendingHL; pendingHL = null; const el = document.querySelector('#page-tasks [data-tid="' + CSS.escape(String(id)) + '"]'); if(el){ el.classList.add("hlflash"); try{ el.scrollIntoView({ block: "nearest" }); }catch(e){} setTimeout(()=>{ el.classList.remove("hlflash"); }, 6000); } }
 function closeCollabUI(){
   pendingHL = null; if(hlTimer){ clearTimeout(hlTimer); hlTimer = null; }
   const am = $("#assignModal"); if(am) am.classList.remove("open");
@@ -1741,38 +2070,39 @@ function openCollab(id){
   collabCurId = id;
   const c = t.collab;
   let h = '<div style="font-size:16px;font-weight:600">' + esc(t.title) + '</div>';
-  h += '<div style="margin:6px 0"><span class="ctag">' + c.execStatus + '</span> ' + dueChip(t) + (c.transfer ? ' <span class="ctag warn">转交待处理</span>' : '') + '</div>';
-  h += '<div class="sub">交办人：' + roleName(c.assigner) + ' · 最初接收人：' + roleName(c.firstAssignee) + ' · 当前执行人：' + roleName(c.executor) + '</div>';
-  h += '<div class="sub">截止日期：' + (t.due || "未设截止") + ' · 优先级：' + esc(t.priority) + (projName(t.projectId) ? ' · 项目：' + esc(projName(t.projectId)) : '') + '</div>';
+  h += '<div style="margin:6px 0"><span class="ctag">' + esc(c.execStatus) + '</span> ' + dueChip(t) + (c.transfer ? ' <span class="ctag warn">转交待处理</span>' : '') + '</div>';
+  h += '<div class="sub">交办人：' + esc(roleName(c.assigner)) + ' · 最初接收人：' + esc(roleName(c.firstAssignee)) + ' · 当前执行人：' + esc(roleName(c.executor)) + '</div>';
+  h += '<div class="sub">截止日期：' + esc(t.due || "未设截止") + ' · 优先级：' + esc(t.priority) + (projName(t.projectId) ? ' · 项目：' + esc(projName(t.projectId)) : '') + '</div>';
   h += '<div class="csec"><b>当前进展</b><div>' + (c.progress ? esc(c.progress) : '<span class="sub">暂未填写</span>') + '</div></div>';
   if(c.deliverable) h += '<div class="csec"><b>成果说明</b><div>' + esc(c.deliverable) + '</div></div>';
   let act = '';
   if(c.execStatus === "待接收" && ROLE === c.executor){
-    act += '<div class="csec"><button class="btn primary" data-cact="accept" data-id="' + t.id + '">接受任务</button></div>';
+    act += '<div class="csec"><button class="btn primary" data-cact="accept" data-id="' + esc(t.id) + '">接受任务</button></div>';
   }
   if(c.transfer && c.transfer.to === ROLE){
-    act += '<div class="csec"><b>转交申请</b><div class="sub">' + roleName(c.transfer.from) + ' 申请转交给你' + (c.transfer.reason ? '，原因：' + esc(c.transfer.reason) : '') + '。接受前对方仍是执行人。</div>' +
-      '<div class="frow" style="margin-top:6px"><button class="btn primary" data-cact="taccept" data-id="' + t.id + '">接受转交</button><button class="btn" data-cact="treturn" data-id="' + t.id + '">退回</button></div>' +
+    act += '<div class="csec"><b>转交申请</b><div class="sub">' + esc(roleName(c.transfer.from)) + ' 申请转交给你' + (c.transfer.reason ? '，原因：' + esc(c.transfer.reason) : '') + '。接受前对方仍是执行人。</div>' +
+      '<div class="frow" style="margin-top:6px"><button class="btn primary" data-cact="taccept" data-id="' + esc(t.id) + '">接受转交</button><button class="btn" data-cact="treturn" data-id="' + esc(t.id) + '">退回</button></div>' +
       '<div class="field"><label>退回原因（退回时必填）</label><input type="text" id="cReturnReason" placeholder="例：手头有紧急验收任务"></div></div>';
   }
   if(c.transfer && c.transfer.from === ROLE){
-    act += '<div class="csec"><b>转交申请处理中</b><div class="sub">已申请转交给 ' + roleName(c.transfer.to) + '，对方接受前你仍是执行人。</div><button class="btn" data-cact="twithdraw" data-id="' + t.id + '">撤回申请</button></div>';
+    act += '<div class="csec"><b>转交申请处理中</b><div class="sub">已申请转交给 ' + esc(roleName(c.transfer.to)) + '，对方接受前你仍是执行人。</div><button class="btn" data-cact="twithdraw" data-id="' + esc(t.id) + '">撤回申请</button></div>';
   }
   if(c.execStatus === "执行中" && ROLE === c.executor && !c.transfer){
-    act += '<div class="csec"><button class="btn small" data-ctgl="cp-progress">更新进展<span class="car">›</span></button><div data-cpanel="cp-progress" style="display:none;margin-top:8px"><div class="field"><textarea id="cProgress" rows="2" placeholder="写一句当前进展">' + esc(c.progress || "") + '</textarea></div><button class="btn" data-cact="progress" data-id="' + t.id + '">保存进展</button></div></div>';
+    act += '<div class="csec"><button class="btn small" data-ctgl="cp-progress">更新进展<span class="car">›</span></button><div data-cpanel="cp-progress" style="display:none;margin-top:8px"><div class="field"><textarea id="cProgress" rows="2" placeholder="写一句当前进展">' + esc(c.progress || "") + '</textarea></div><button class="btn" data-cact="progress" data-id="' + esc(t.id) + '">保存进展</button></div></div>';
     const peer = c.executor === "mate" ? "me" : "mate";
     const others = c.executor === "leader" ? ["me", "mate"] : [peer, "leader"];
-    act += '<div class="csec"><button class="btn small" data-ctgl="cp-transfer">转交执行<span class="car">›</span></button><div data-cpanel="cp-transfer" style="display:none;margin-top:8px"><div class="field"><label>转交给</label><select id="cTo">' + others.map(k=>'<option value="' + k + '">' + (k === "leader" ? "领导（转回执行）" : ROLE_NAMES[k]) + '</option>').join("") + '</select></div><div class="field"><label>转交原因</label><input type="text" id="cReason" placeholder="例：本周要集中处理能碳平台汇报"></div><button class="btn" data-cact="transfer" data-id="' + t.id + '">申请转交</button></div></div>';
-    act += '<div class="csec"><button class="btn small" data-ctgl="cp-submit">提交成果<span class="car">›</span></button><div data-cpanel="cp-submit" style="display:none;margin-top:8px"><div class="field"><textarea id="cDeliver" rows="2" placeholder="说明完成情况和成果">' + esc(c.deliverable || "") + '</textarea></div><button class="btn primary" data-cact="submit" data-id="' + t.id + '">提交成果给领导确认</button></div></div>';
+    act += '<div class="csec"><button class="btn small" data-ctgl="cp-transfer">转交执行<span class="car">›</span></button><div data-cpanel="cp-transfer" style="display:none;margin-top:8px"><div class="field"><label>转交给</label><select id="cTo">' + others.map(k=>'<option value="' + k + '">' + (k === "leader" ? "领导（转回执行）" : ROLE_NAMES[k]) + '</option>').join("") + '</select></div><div class="field"><label>转交原因</label><input type="text" id="cReason" placeholder="例：本周要集中处理能碳平台汇报"></div><button class="btn" data-cact="transfer" data-id="' + esc(t.id) + '">申请转交</button></div></div>';
+    act += '<div class="csec"><button class="btn small" data-ctgl="cp-submit">提交成果<span class="car">›</span></button><div data-cpanel="cp-submit" style="display:none;margin-top:8px"><div class="field"><textarea id="cDeliver" rows="2" placeholder="说明完成情况和成果">' + esc(c.deliverable || "") + '</textarea></div><button class="btn primary" data-cact="submit" data-id="' + esc(t.id) + '">提交成果给领导确认</button></div></div>';
   }
   if(c.execStatus === "待确认完成" && ROLE === c.assigner){
-    act += '<div class="csec"><b>领导确认</b><div class="frow" style="margin-top:6px"><button class="btn primary" data-cact="confirm" data-id="' + t.id + '">确认完成</button><button class="btn" data-cact="back" data-id="' + t.id + '">退回补充</button></div><div class="field"><label>补充要求（退回时必填）</label><input type="text" id="cBackNote" placeholder="例：请补上数据口径说明"></div></div>';
+    act += '<div class="csec"><b>领导确认</b><div class="frow" style="margin-top:6px"><button class="btn primary" data-cact="confirm" data-id="' + esc(t.id) + '">确认完成</button><button class="btn" data-cact="back" data-id="' + esc(t.id) + '">退回补充</button></div><div class="field"><label>补充要求（退回时必填）</label><input type="text" id="cBackNote" placeholder="例：请补上数据口径说明"></div></div>';
   }
   if(c.execStatus === "已完成"){
-    act += '<div class="csec"><span class="tag green">已完成</span> <span class="sub">完成日期 ' + (t.doneAt || "") + '，汇总本周时按实际完成日期计入周报。</span></div>';
+    act += '<div class="csec"><span class="tag green">已完成</span> <span class="sub">完成日期 ' + esc(t.doneAt || "") + '，汇总本周时按实际完成日期计入周报。</span></div>';
   }
+  h += relatedLogsHtml(t.id);
   h += act;
-  h += '<div class="csec"><button class="btn small" data-ctgl="cp-history">流转记录（' + c.history.length + ' 条）</button><div data-cpanel="cp-history" style="display:none;margin-top:8px"><div class="tl">' + c.history.map(x=> '<div class="tli"><b>' + esc(x.at) + '</b> ' + roleName(x.who) + ' · ' + esc(x.what) + (x.note ? '：' + esc(x.note) : '') + '</div>').join("") + '</div></div></div>';
+  h += '<div class="csec"><button class="btn small" data-ctgl="cp-history">流转记录（' + c.history.length + ' 条）</button><div data-cpanel="cp-history" style="display:none;margin-top:8px"><div class="tl">' + c.history.map(x=> '<div class="tli"><b>' + esc(x.at) + '</b> ' + esc(roleName(x.who)) + ' · ' + esc(x.what) + (x.note ? '：' + esc(x.note) : '') + '</div>').join("") + '</div></div></div>';
   $("#collabBody").innerHTML = h;
   $("#collabModal").classList.add("open");
 }
@@ -1793,7 +2123,7 @@ function collabAct(id, act){
   else return;
   if(t.projectId) touchProject(t.projectId);
   save(); renderTasks(); openCollab(id);
-  const rowEl = document.querySelector('#page-tasks [data-tid="' + id + '"]');
+  const rowEl = document.querySelector('#page-tasks [data-tid="' + CSS.escape(String(id)) + '"]');
   if(rowEl){ pendingHL = id; }
   else { const stv = $("#taskFilterStatus").value; const stName = { active: "在办", overdue: "逾期", done: "已完成" }[stv];
     const statusHides = (stv === "active" && t.done && !t._flash) || (stv === "done" && !t.done) || (stv === "overdue" && taskState(t) !== "overdue" && !t._flash);
@@ -1831,7 +2161,7 @@ $("#btnResetDemo").addEventListener("click", ()=>{
   snapBegin(); closeCollabUI(); snapEnd();
   $$(".home-fold").forEach(d=>d.open=false);
   if(MODE === "demo"){ DB = demoData(); save(); renderAll(); }
-  toast("演示数据已重置为 V3.6 品牌光晕 · 全景玻璃版演示场景");
+  toast("演示数据已重置为 V3.7 品牌光晕 · 全景玻璃版演示场景");
 });
 renderCollabBar();
 document.addEventListener("pointerdown", e=>{
@@ -1846,7 +2176,7 @@ document.addEventListener("pointerdown", e=>{
 });
 
 /* ============ 总渲染与初始化 ============ */
-function renderAll(){ renderToday(); renderLogs(); renderTasks(); renderProjects(); renderWeekly(); if(curPage==="calendar") renderCalendar(); fillProjectSelects(); }
+function renderAll(){ renderToday(); renderLogs(); renderTasks(); renderProjects(); renderWeekly(); if(curPage==="calendar") renderCalendar(); fillProjectSelects(); if($("#taskDetailModal").classList.contains("open")) renderTaskDetail(); if($("#projDetailModal").classList.contains("open")) openProjDetail(); }
 load();
 (function(){ const bw = JSON.stringify(DB.weekly) + "|" + JSON.stringify(DB.logs); migrateWeekly(); migrateMeetings(); if(bw !== JSON.stringify(DB.weekly) + "|" + JSON.stringify(DB.logs)) save(); })();
 (function boot(){
