@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="泰兴数产工作台">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2720%27%20fill%3D%27white%27%2F%3E%3Ctext%20x%3D%2750%27%20y%3D%2747%27%20font-size%3D%2725%27%20font-weight%3D%27700%27%20fill%3D%27%25230E5390%27%20text-anchor%3D%27middle%27%20font-family%3D%27sans-serif%27%3E%E6%95%B0%E4%BA%A7%3C%2Ftext%3E%3Cpath%20d%3D%27M18%2062%20Q50%2080%2082%2060%27%20stroke%3D%27%2523E8821E%27%20stroke-width%3D%277%27%20fill%3D%27none%27%20stroke-linecap%3D%27round%27%2F%3E%3C%2Fsvg%3E">
-<title>泰兴数产 · 个人工作台 V3.8（品牌光晕 · 全景玻璃版）</title>
+<title>泰兴数产 · 个人工作台 V3.9（品牌光晕 · 全景玻璃版）</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231f3b63'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif'>数</text></svg>">
 <style>
 :root{
@@ -371,7 +371,6 @@ input[type=checkbox].big{accent-color:#0E5390}
     </div>
     <div class="card" id="doCard">
       <div class="home-heading"><h2>今天要做</h2><button class="home-link" data-goto="calendar">日历 →</button></div>
-      <p class="home-caption">逾期 · 今日任务 · 今日会议</p>
       <div id="todayDoList"></div>
       <div class="home-tools"><button class="home-link" id="btnIcsToday">生成日历提醒</button></div>
     </div>
@@ -381,7 +380,7 @@ input[type=checkbox].big{accent-color:#0E5390}
       <details class="home-fold" id="homeProjects"><summary><span>重点项目</span><span class="fold-meta">查看动态</span><span class="fold-chevron" aria-hidden="true">›</span></summary><div class="fold-body"><div class="home-fold-tools"><button class="home-link" data-goto="projects">全部项目 →</button></div><div id="todayDynamics"></div></div></details>
       <details class="home-fold" id="homeMemos"><summary><span>备忘录</span><span class="fold-meta" id="homeMemoCount">0 条</span><span class="fold-chevron" aria-hidden="true">›</span></summary><div class="fold-body">
         <div class="field" style="margin-bottom:8px"><textarea id="memoInput" rows="2" placeholder="临时想法、上级口径、待核实信息……"></textarea></div>
-        <button class="btn primary small" id="btnMemoSave">保存备忘</button><p class="sub" style="margin:8px 0">保存在本机，可一键转任务</p><div id="memoList"></div>
+        <button class="btn primary small" id="btnMemoSave">保存备忘</button><div id="memoList"></div>
       </div></details>
     </div>
   </section>
@@ -419,7 +418,7 @@ input[type=checkbox].big{accent-color:#0E5390}
   <!-- 任务分派 -->
   <section class="page" id="page-tasks">
     <div class="card" id="collabBar" style="display:none">
-      <h3>协作流程演示 <span class="tag yellow">模拟角色 · 本机数据</span> <span class="tag gray">V3.8</span></h3>
+      <h3>协作流程演示 <span class="tag yellow">模拟角色 · 本机数据</span> <span class="tag gray">V3.9</span></h3>
       <div class="rolebtns">
         <div class="segtrack"><span class="segpill"></span><button class="btn small" data-role-set="leader">领导视角</button>
         <button class="btn small" data-role-set="me">员工本人</button>
@@ -535,7 +534,7 @@ input[type=checkbox].big{accent-color:#0E5390}
   <button class="btn small" id="btnResetDemo">重置演示数据</button>
   <button class="btn small danger" id="btnClear">清空全部数据</button>
   <span id="dataInfo"></span>
-  <div class="sub" style="margin-top:6px">当前版本：V3.8 品牌光晕 · 全景玻璃版 · 2026-10-21</div>
+  <div class="sub" style="margin-top:6px">当前版本：V3.9 品牌光晕 · 全景玻璃版 · 2026-10-21</div>
 </details></div>
 
 <div class="modal-bg" id="weekReportModal"><div class="modal">
@@ -897,7 +896,7 @@ function capParts(parts){
 }
 function taskItemHtml(t){
   const flash = t.done && t._flash;
-  return '<div class="item'+(flash?' flashdone':'')+'"><input type="checkbox" class="big" data-complete-task="'+esc(t.id)+'"'+(t.done?" checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+dueLabel(t)+'</div><div class="sub">'+esc(taskExtraText(t).replace(/^ · /,''))+'</div><div class="sub">'+esc(t.owner||"未填")+(projName(t.projectId)?' · '+esc(projName(t.projectId)):'')+(t.due?' · <span class="nw">截止 '+esc(t.due)+'</span>':' · 未设截止')+'</div></div>'+(flash?'<div class="ops"><button class="btn small" data-undo-task="'+esc(t.id)+'">撤销</button></div>':'')+'</div>';
+  return '<div class="item'+(flash?' flashdone':'')+'"><input type="checkbox" class="big" data-complete-task="'+esc(t.id)+'"'+(t.done?" checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+dueLabel(t)+'</div><div class="sub">'+esc(taskExtraText(t).replace(/^ · /,''))+'</div></div>'+(flash?'<div class="ops"><button class="btn small" data-undo-task="'+esc(t.id)+'">撤销</button></div>':'')+'</div>';
 }
 function renderToday(){
   const ts = todayStr();
@@ -941,7 +940,7 @@ function renderToday(){
   $("#urgentList").innerHTML = attParts.length ? capParts(attParts) + (attParts.length>5 ? '<div class="more-row" data-expand="urgentList" data-label="展开全部 '+attParts.length+' 项">展开全部 '+attParts.length+' 项</div>' : "") : '<div class="empty">没有需要特别关注的事项</div>';
 
   $("#todayLogs").innerHTML = todayLogs.length ? todayLogs.slice().sort((a,b)=>(a.time||"").localeCompare(b.time||"")).slice(0,4).map(l=>
-    '<div class="item"><div class="main"><div><span class="tag">'+esc(l.type)+'</span>'+esc(l.content)+'</div><div class="sub">'+esc(l.time||"")+(l.related?' · '+esc(l.related):'')+(projName(l.projectId)?' · '+esc(projName(l.projectId)):'')+'</div></div></div>'
+    '<div class="item"><div class="main"><div><span class="tag">'+esc(l.type)+'</span>'+esc(l.content)+'</div><div class="sub">'+esc(l.time||"")+'</div></div></div>'
   ).join("") + (todayLogs.length>4 ? '<div class="more-row" data-goto="logs">还有 '+(todayLogs.length-4)+' 条，去日志页看全部</div>' : "") : '<div class="empty">今天还没有记录，<b data-goto="logs">去记第一条</b></div>';
 
 
@@ -1048,7 +1047,7 @@ function renderLogs(){
   list = list.slice().sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time)).reverse();
   $("#logCount").textContent = kw ? "关键词共 "+list.length+" 条" : fmtDate(vd)+" 共 "+list.length+" 条";
   $("#logList").innerHTML = list.length ? list.map(l=>
-    '<div class="item" data-lid="'+esc(l.id)+'"><div class="main"><div><span class="tag">'+esc(l.type)+'</span><b>'+esc(l.date)+' '+esc(l.time||"")+'</b> '+esc(l.content)+'</div><div class="sub">'+(l.related?'涉及：'+esc(l.related)+' · ':'')+(projName(l.projectId)?'项目：'+esc(projName(l.projectId)):'未关联项目')+(l.taskId && DB.tasks.some(t=>t.id===l.taskId)?' · 任务：'+esc(DB.tasks.find(t=>t.id===l.taskId).title):'')+'</div></div><div class="ops">'+((l.date<=todayStr() && l.type==="会议" && !l.confirmed)?'<button class="btn small" data-confirm-log="'+esc(l.id)+'">确认已开</button>':'')+'<button class="btn small" data-log-edit="'+esc(l.id)+'">编辑</button><button class="btn small danger" data-log-del="'+esc(l.id)+'">删除</button></div></div>'
+    '<div class="item" data-lid="'+esc(l.id)+'"><div class="main"><div><span class="tag">'+esc(l.type)+'</span><b>'+esc(l.date)+' '+esc(l.time||"")+'</b> '+esc(l.content)+'</div></div><div class="ops">'+((l.date<=todayStr() && l.type==="会议" && !l.confirmed)?'<button class="btn small" data-confirm-log="'+esc(l.id)+'">确认已开</button>':'')+'<button class="btn small" data-log-edit="'+esc(l.id)+'">编辑</button><button class="btn small danger" data-log-del="'+esc(l.id)+'">删除</button></div></div>'
   ).join("") : '<div class="empty">这一天没有记录，可在上方补记；清空上方日期或输入关键词可跨日期查找</div>';
 }
 $("#btnLogSave").addEventListener("click", ()=>{
@@ -1145,7 +1144,7 @@ function renderTasks(){
   const cAll = DB.tasks.length, cAct = DB.tasks.filter(t=>!t.done).length, cOver = DB.tasks.filter(t=>taskState(t)==="overdue").length, cDone = DB.tasks.filter(t=>t.done).length;
   $("#taskCount").textContent = "在办 "+cAct+" · 逾期 "+cOver+" · 已完成 "+cDone+" · 共 "+cAll;
   $("#taskList").innerHTML = list.length ? list.map(t=> (t.collab && MODE==="demo") ? collabRowHtml(t) : (
-    '<div class="item" data-tid="'+esc(t.id)+'"><input type="checkbox" class="big" data-complete-task="'+esc(t.id)+'" '+(t.done?"checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+priTag(t.priority)+' '+dueLabel(t)+'</div><div class="sub">'+esc(taskExtraText(t).replace(/^ · /,''))+'</div><div class="sub">责任人：'+esc(t.owner||"未填")+(projName(t.projectId)?' · 项目：'+esc(projName(t.projectId)):'')+(t.due?' · <span class="nw">截止 '+esc(t.due)+'</span>':' · 未设截止')+'</div></div><div class="ops">'+(t._flash?'<button class="btn small" data-undo-task="'+esc(t.id)+'">撤销</button>':'')+orderButtons(t)+'<button class="btn small" data-task-open="'+esc(t.id)+'">详情</button><button class="btn small" data-task-edit="'+esc(t.id)+'">编辑</button><button class="btn small danger" data-task-del="'+esc(t.id)+'">删除</button></div></div>'
+    '<div class="item" data-tid="'+esc(t.id)+'"><input type="checkbox" class="big" data-complete-task="'+esc(t.id)+'" '+(t.done?"checked":"")+'><div class="main"><div class="'+(t.done?"done-txt":"")+'">'+esc(t.title)+' '+priTag(t.priority)+' '+dueLabel(t)+'</div><div class="sub">'+esc(taskExtraText(t).replace(/^ · /,''))+'</div></div><div class="ops">'+(t._flash?'<button class="btn small" data-undo-task="'+esc(t.id)+'">撤销</button>':'')+orderButtons(t)+'<button class="btn small" data-task-open="'+esc(t.id)+'">详情</button><button class="btn small" data-task-edit="'+esc(t.id)+'">编辑</button><button class="btn small danger" data-task-del="'+esc(t.id)+'">删除</button></div></div>'
   )).join("") : '<div class="empty">这一类暂无任务</div>';
 }
 $("#btnTaskSave").addEventListener("click", ()=>{
@@ -1184,7 +1183,7 @@ function renderProjects(){
   fillProjectSelects();
   const grid = $("#projGrid");
   grid.innerHTML = DB.projects.length ? DB.projects.map(p=>
-    '<div class="card proj'+(p.id===selProjId?" sel":"")+'" data-proj-sel="'+esc(p.id)+'"><div style="display:flex;gap:8px;align-items:flex-start"><div class="main" style="flex:1"><div class="pname">'+esc(p.name)+'</div><div class="sub">负责人：'+esc(p.owner||"未填")+' · '+esc(p.start||"")+' 至 '+esc(p.end||"")+'</div></div>'+statusTag(p.status)+'</div><div class="bar"><i class="'+(p.status==="预警"?"warnp":"")+'" style="width:'+Math.min(100,Math.max(0,p.progress||0))+'%"></i></div><div class="sub">进度 '+(p.progress||0)+'%'+(p.updatedAt?' · 最近更新 '+esc(fmtDate(p.updatedAt)):'')+(p.risk?' · <span class="risklab">风险：</span><span class="risktext">'+esc(p.risk)+'</span>':'')+'</div><div class="ops" style="margin-top:8px"><button class="btn small" data-proj-edit="'+esc(p.id)+'">编辑</button><button class="btn small danger" data-proj-del="'+esc(p.id)+'">删除</button></div></div>'
+    '<div class="card proj'+(p.id===selProjId?" sel":"")+'" data-proj-sel="'+esc(p.id)+'"><div style="display:flex;gap:8px;align-items:flex-start"><div class="main" style="flex:1"><div class="pname">'+esc(p.name)+'</div></div>'+statusTag(p.status)+'</div><div class="bar"><i class="'+(p.status==="预警"?"warnp":"")+'" style="width:'+Math.min(100,Math.max(0,p.progress||0))+'%"></i></div><div class="sub">进度 '+(p.progress||0)+'%'+(p.risk?' · <span class="risklab">风险：</span><span class="risktext">'+esc(p.risk)+'</span>':'')+'</div><div class="ops" style="margin-top:8px"><button class="btn small" data-proj-edit="'+esc(p.id)+'">编辑</button><button class="btn small danger" data-proj-del="'+esc(p.id)+'">删除</button></div></div>'
   ).join("") : '<div class="card empty" style="grid-column:1/-1">还没有项目，用上方表单新建第一个项目</div>';
   /* 动态时间线 */
   const title = $("#projDynTitle"), body = $("#projDynamics");
@@ -2271,7 +2270,7 @@ $("#btnResetDemo").addEventListener("click", ()=>{
   snapBegin(); closeCollabUI(); snapEnd();
   $$(".home-fold").forEach(d=>d.open=false);
   if(MODE === "demo"){ DB = demoData(); save(); renderAll(); }
-  toast("演示数据已重置为 V3.8 品牌光晕 · 全景玻璃版演示场景");
+  toast("演示数据已重置为 V3.9 品牌光晕 · 全景玻璃版演示场景");
 });
 renderCollabBar();
 document.addEventListener("pointerdown", e=>{
