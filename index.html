@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="泰兴数产工作台">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2720%27%20fill%3D%27white%27%2F%3E%3Ctext%20x%3D%2750%27%20y%3D%2747%27%20font-size%3D%2725%27%20font-weight%3D%27700%27%20fill%3D%27%25230E5390%27%20text-anchor%3D%27middle%27%20font-family%3D%27sans-serif%27%3E%E6%95%B0%E4%BA%A7%3C%2Ftext%3E%3Cpath%20d%3D%27M18%2062%20Q50%2080%2082%2060%27%20stroke%3D%27%2523E8821E%27%20stroke-width%3D%277%27%20fill%3D%27none%27%20stroke-linecap%3D%27round%27%2F%3E%3C%2Fsvg%3E">
-<title>泰兴数产 · 个人工作台 V3.10（品牌光晕 · 全景玻璃版）</title>
+<title>泰兴数产 · 个人工作台 V3.11（品牌光晕 · 全景玻璃版）</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231f3b63'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif'>数</text></svg>">
 <style>
 :root{
@@ -119,6 +119,16 @@ textarea{resize:vertical;min-height:40px}
 .filters .sp{flex:1}
 .proj-grid{display:grid;grid-template-columns:1fr;gap:0}
 .proj{cursor:pointer}
+.proj-swipe{--proj-action-width:192px;--proj-shift:0px;position:relative;min-width:0;overflow:hidden;border-radius:var(--radius);margin-bottom:12px;isolation:isolate}
+.proj-swipe .proj{position:relative;z-index:1;margin-bottom:0;min-width:0;touch-action:pan-y pinch-zoom;transform:translateX(var(--proj-shift));transition:transform 180ms var(--ease-out)}
+.proj-swipe.swipe-open{--proj-shift:calc(0px - var(--proj-action-width))}
+.proj-swipe.swipe-dragging .proj{transition:none;user-select:none;-webkit-user-select:none}
+.proj-actions{position:absolute;inset:0 0 0 auto;width:var(--proj-action-width);display:flex;opacity:0;pointer-events:none;clip-path:inset(0 0 0 calc(var(--proj-action-width) + var(--proj-shift)));background:#EAF2FA}
+.proj-swipe.swipe-open .proj-actions,.proj-swipe.swipe-dragging .proj-actions{opacity:1;pointer-events:auto}
+.proj-actions .btn{flex:1;min-width:0;min-height:44px;padding:8px 4px;border:0;border-radius:0;background:#EAF2FA;color:#0E5390}
+.proj-actions .btn[data-proj-edit]{background:#DCEBF8}
+.proj-actions .btn.danger{background:#FBEDEC;color:#B43A31}
+.proj-swipe .proj:focus-visible,.proj-actions .btn:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
 .proj.sel{border-color:var(--navy);box-shadow:0 0 0 2px rgba(31,59,99,.15)}
 .proj .pname{font-size:15.5px;font-weight:700}
 .bar{height:8px;background:var(--light);border-radius:99px;overflow:hidden;margin:8px 0 4px}
@@ -294,6 +304,7 @@ input[type=checkbox].big{accent-color:#0E5390}
 .segtrack .btn:hover{background:transparent}
 }
 @media (prefers-reduced-motion: reduce){
+  .proj-swipe .proj{transition:none}
   .modal-bg{transition:opacity 100ms ease-out,visibility 0s linear 100ms}
   .modal-bg.open{transition:opacity 100ms ease-out,visibility 0s}
   .modal-bg .modal,.modal-bg.open .modal{transform:none;transition:none}
@@ -418,7 +429,7 @@ input[type=checkbox].big{accent-color:#0E5390}
   <!-- 任务分派 -->
   <section class="page" id="page-tasks">
     <div class="card" id="collabBar" style="display:none">
-      <h3>协作流程演示 <span class="tag yellow">模拟角色 · 本机数据</span> <span class="tag gray">V3.10</span></h3>
+      <h3>协作流程演示 <span class="tag yellow">模拟角色 · 本机数据</span> <span class="tag gray">V3.11</span></h3>
       <div class="rolebtns">
         <div class="segtrack"><span class="segpill"></span><button class="btn small" data-role-set="leader">领导视角</button>
         <button class="btn small" data-role-set="me">员工本人</button>
@@ -534,7 +545,7 @@ input[type=checkbox].big{accent-color:#0E5390}
   <button class="btn small" id="btnResetDemo">重置演示数据</button>
   <button class="btn small danger" id="btnClear">清空全部数据</button>
   <span id="dataInfo"></span>
-  <div class="sub" style="margin-top:6px">当前版本：V3.10 品牌光晕 · 全景玻璃版 · 2026-10-21</div>
+  <div class="sub" style="margin-top:6px">当前版本：V3.11 品牌光晕 · 全景玻璃版 · 2026-10-21</div>
 </details></div>
 
 <div class="modal-bg" id="weekReportModal"><div class="modal">
@@ -554,6 +565,8 @@ input[type=checkbox].big{accent-color:#0E5390}
 <div class="sub" id="pdMeta" style="margin:4px 0 10px"></div>
 <div id="pdBody"></div>
 <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+  <button class="btn" id="btnPdEdit">编辑</button>
+  <button class="btn danger" id="btnPdDelete">删除</button>
   <button class="btn" id="btnPdClose">关闭</button>
 </div>
 </div>
@@ -869,6 +882,7 @@ function priTag(p){ return p==="高" ? '<span class="tag red">高</span>' : (p==
 /* ============ 导航 ============ */
 let curPage = "today";
 function gotoPage(name, animateNav = false){
+  closeProjectSwipes();
   curPage = name;
   const nav = $("#mainNav"), buttons = $$("#mainNav button");
   nav.classList.toggle("animate-nav", animateNav);
@@ -1182,8 +1196,9 @@ function statusTag(s){ return s==="预警" ? '<span class="tag red">预警</span
 function renderProjects(){
   fillProjectSelects();
   const grid = $("#projGrid");
+  closeProjectSwipes();
   grid.innerHTML = DB.projects.length ? DB.projects.map(p=>
-    '<div class="card proj'+(p.id===selProjId?" sel":"")+'" data-proj-sel="'+esc(p.id)+'"><div style="display:flex;gap:8px;align-items:flex-start"><div class="main" style="flex:1"><div class="pname">'+esc(p.name)+'</div></div>'+statusTag(p.status)+'</div><div class="bar"><i class="'+(p.status==="预警"?"warnp":"")+'" style="width:'+Math.min(100,Math.max(0,p.progress||0))+'%"></i></div><div class="sub">进度 '+(p.progress||0)+'%'+(p.risk?' · <span class="risklab">风险：</span><span class="risktext">'+esc(p.risk)+'</span>':'')+'</div><div class="ops" style="margin-top:8px"><button class="btn small" data-proj-edit="'+esc(p.id)+'">编辑</button><button class="btn small danger" data-proj-del="'+esc(p.id)+'">删除</button></div></div>'
+    '<div class="proj-swipe" data-proj-swipe="'+esc(p.id)+'"><div class="card proj'+(p.id===selProjId?" sel":"")+'" data-proj-sel="'+esc(p.id)+'" role="button" tabindex="0" aria-label="'+esc(p.name)+'，查看项目详情"><div style="display:flex;gap:8px;align-items:flex-start"><div class="main" style="flex:1"><div class="pname">'+esc(p.name)+'</div></div>'+statusTag(p.status)+'</div><div class="bar"><i class="'+(p.status==="预警"?"warnp":"")+'" style="width:'+Math.min(100,Math.max(0,p.progress||0))+'%"></i></div><div class="sub">进度 '+(p.progress||0)+'%'+(p.risk?' · <span class="risklab">风险：</span><span class="risktext">'+esc(p.risk)+'</span>':'')+'</div></div><div class="proj-actions" role="group" aria-label="'+esc(p.name)+'的项目操作"><button class="btn" data-proj-detail="'+esc(p.id)+'">详情</button><button class="btn" data-proj-edit="'+esc(p.id)+'">编辑</button><button class="btn danger" data-proj-del="'+esc(p.id)+'">删除</button></div></div>'
   ).join("") : '<div class="card empty" style="grid-column:1/-1">还没有项目，用上方表单新建第一个项目</div>';
   /* 动态时间线 */
   const title = $("#projDynTitle"), body = $("#projDynamics");
@@ -1196,6 +1211,81 @@ function renderProjects(){
   acts.sort((a,b)=>b.when.localeCompare(a.when));
   body.innerHTML = acts.length ? acts.map(a=>'<div class="item"><div class="main"><div>'+a.html+'</div><div class="sub">'+esc(a.when)+(a.sub?' · '+esc(a.sub):'')+'</div></div></div>').join("") : '<div class="empty">这个项目还没有日志和任务，去记一条关联它的日志</div>';
 }
+/* 项目卡左滑：动作仍交给原项目点击/编辑/删除处理器。 */
+let projectGesture=null, projectSwipeClick=null;
+function resetProjectSwipe(wrap){
+  wrap.classList.remove("swipe-open","swipe-dragging"); wrap.style.removeProperty("--proj-shift");
+}
+function releaseProjectPointer(g){ try{ if(g.face.hasPointerCapture(g.id)) g.face.releasePointerCapture(g.id); }catch(e){} }
+function closeProjectSwipes(){
+  const g=projectGesture; projectGesture=null;
+  if(g){ if(g.axis==="x") projectSwipeClick={wrap:g.wrap,until:performance.now()+500}; releaseProjectPointer(g); }
+  document.querySelectorAll("#projGrid .proj-swipe").forEach(resetProjectSwipe);
+}
+function settleProjectSwipe(wrap,open){
+  document.querySelectorAll("#projGrid .proj-swipe").forEach(w=>{ if(w!==wrap) resetProjectSwipe(w); });
+  wrap.classList.remove("swipe-dragging"); wrap.style.removeProperty("--proj-shift"); wrap.classList.toggle("swipe-open",open);
+}
+const projectGrid=$("#projGrid");
+projectGrid.addEventListener("pointerdown",e=>{
+  if(e.button!==0 || projectGesture) return;
+  const face=e.target.closest("[data-proj-sel]"); if(!face || e.target.closest("button")) return;
+  const wrap=face.closest(".proj-swipe"); if(!wrap) return;
+  projectSwipeClick=null;
+  const width=wrap.querySelector(".proj-actions").getBoundingClientRect().width || 192;
+  const wasOpen=wrap.classList.contains("swipe-open");
+  projectGesture={wrap,face,id:e.pointerId,x:e.clientX,y:e.clientY,dx:0,axis:null,width,wasOpen,base:wasOpen?-width:0};
+});
+window.addEventListener("pointermove",e=>{
+  const g=projectGesture; if(!g || e.pointerId!==g.id) return;
+  const dx=e.clientX-g.x, dy=e.clientY-g.y; g.dx=dx;
+  if(!g.axis){
+    if(Math.abs(dy)>=10 && Math.abs(dy)>=Math.abs(dx)){ g.axis="y"; return; }
+    if(Math.abs(dx)<10 || Math.abs(dx)<=Math.abs(dy)*1.25) return;
+    g.axis="x";
+    document.querySelectorAll("#projGrid .proj-swipe").forEach(w=>{ if(w!==g.wrap) resetProjectSwipe(w); });
+    g.wrap.classList.add("swipe-dragging");
+    try{ g.face.setPointerCapture(g.id); }catch(err){}
+  }
+  if(g.axis!=="x") return;
+  if(e.cancelable) e.preventDefault();
+  g.wrap.style.setProperty("--proj-shift",Math.max(-g.width,Math.min(0,g.base+dx))+"px");
+},{passive:false});
+function endProjectSwipe(e,cancelled=false){
+  const g=projectGesture; if(!g || e.pointerId!==g.id) return;
+  projectGesture=null; releaseProjectPointer(g);
+  if(g.axis!=="x") return;
+  const threshold=Math.min(64,g.width*.35);
+  const open=cancelled?g.wasOpen:(g.wasOpen?g.dx<threshold:-g.dx>=threshold);
+  settleProjectSwipe(g.wrap,open);
+  projectSwipeClick={wrap:g.wrap,until:performance.now()+500};
+}
+window.addEventListener("pointerup",e=>endProjectSwipe(e));
+window.addEventListener("pointercancel",e=>endProjectSwipe(e,true));
+projectGrid.addEventListener("lostpointercapture",e=>{ if(projectGesture && projectGesture.id===e.pointerId) endProjectSwipe(e,true); });
+window.addEventListener("blur",closeProjectSwipes);
+// 在原业务点击监听器之前拦住拖动合成的点击及已展开卡面的点击。
+document.addEventListener("click",e=>{
+  const wrap=e.target.closest("#projGrid .proj-swipe");
+  if(!wrap){ closeProjectSwipes(); return; }
+  const action=e.target.closest(".proj-actions button");
+  if(action){ closeProjectSwipes(); return; }
+  if(!e.target.closest("[data-proj-sel]")) return;
+  if(projectSwipeClick && projectSwipeClick.wrap===wrap && performance.now()<projectSwipeClick.until && e.detail>0){
+    projectSwipeClick=null; e.preventDefault(); e.stopImmediatePropagation(); return;
+  }
+  projectSwipeClick=null;
+  if(wrap.classList.contains("swipe-open")){ closeProjectSwipes(); e.preventDefault(); e.stopImmediatePropagation(); }
+},true);
+projectGrid.addEventListener("focusin",e=>{ const action=e.target.closest(".proj-actions button"); if(action) settleProjectSwipe(action.closest(".proj-swipe"),true); });
+projectGrid.addEventListener("focusout",e=>{ const wrap=e.target.closest(".proj-swipe"); if(wrap && !wrap.contains(e.relatedTarget)) resetProjectSwipe(wrap); });
+projectGrid.addEventListener("keydown",e=>{
+  const wrap=e.target.closest(".proj-swipe"); if(!wrap) return;
+  if(e.key==="Escape"){ e.preventDefault(); closeProjectSwipes(); wrap.querySelector("[data-proj-sel]").focus(); return; }
+  const face=e.target.closest("[data-proj-sel]");
+  if(face && (e.key==="Enter" || e.key===" ")){ e.preventDefault(); face.click(); }
+});
+
 $("#btnProjSave").addEventListener("click", ()=>{
   const name = $("#projName").value.trim(); if(!name){ toast("项目名称不能为空"); return; }
   let pStatus = $("#projStatus").value;
@@ -1212,18 +1302,30 @@ $("#btnProjSave").addEventListener("click", ()=>{
 });
 $("#btnProjCancel").addEventListener("click", ()=>{ editProjId=null; $("#projFormTitle").textContent="新建项目"; $("#btnProjSave").textContent="保存项目"; $("#btnProjCancel").style.display="none"; });
 document.addEventListener("click", e=>{
-  const card = e.target.closest("[data-proj-sel]");
-  if(card && !e.target.closest("button")){ selProjId = card.dataset.projSel; renderProjects(); openProjDetail(); }
+  const card = e.target.closest("[data-proj-sel]"), detail=e.target.closest("[data-proj-detail]");
+  if(detail || (card && !e.target.closest("button"))){ selProjId=detail?detail.dataset.projDetail:card.dataset.projSel; renderProjects(); openProjDetail(); return; }
   const ed = e.target.closest("[data-proj-edit]");
-  if(ed){ const p = DB.projects.find(x=>x.id===ed.dataset.projEdit); if(!p) return; editProjId = p.id;
+  if(ed){ closeProjectSwipes(); const p = DB.projects.find(x=>x.id===ed.dataset.projEdit); if(!p) return; $("#projDetailModal").classList.remove("open"); editProjId = p.id;
     $("#projName").value=p.name; $("#projOwner").value=p.owner||""; $("#projStatus").value=p.status; $("#projStart").value=p.start||""; $("#projEnd").value=p.end||""; $("#projProgress").value=p.progress||0; $("#projRisk").value=p.risk||"";
     $("#projFormTitle").textContent="编辑项目"; $("#btnProjSave").textContent="保存修改"; $("#btnProjCancel").style.display=""; openFormModal("projects"); }
   const del = e.target.closest("[data-proj-del]");
-  if(del){ if(confirm("删除这个项目？关联的日志和任务会保留，只是不再关联该项目。")){ const id = del.dataset.projDel; DB.projects = DB.projects.filter(x=>x.id!==id); DB.logs.forEach(l=>{ if(l.projectId===id) l.projectId=""; }); DB.tasks.forEach(t=>{ if(t.projectId===id) t.projectId=""; }); if(selProjId===id) selProjId=""; const ok=save(); toast(ok?"项目已删除":"保存失败：项目未能删除"); } }
+  if(del){ closeProjectSwipes(); if(confirm("删除这个项目？关联的日志和任务会保留，只是不再关联该项目。")){ const id = del.dataset.projDel; $("#projDetailModal").classList.remove("open"); DB.projects = DB.projects.filter(x=>x.id!==id); DB.logs.forEach(l=>{ if(l.projectId===id) l.projectId=""; }); DB.tasks.forEach(t=>{ if(t.projectId===id) t.projectId=""; }); if(selProjId===id) selProjId=""; const ok=save(); toast(ok?"项目已删除":"保存失败：项目未能删除"); } }
 });
 
 /* ============ 周报 ============ */
 let editWeekId = null;
+let weekFormFocusTimer = null;
+function clearWeekFormFocus(){
+  clearTimeout(weekFormFocusTimer); weekFormFocusTimer=null;
+  const form=$("#weekFormTitle").closest(".form"); if(form) form.classList.remove("hlflash");
+}
+function revealWeekForm(){
+  const form=$("#weekFormTitle").closest(".form"); if(!form) return;
+  clearWeekFormFocus();
+  form.style.scrollMarginTop=(Math.ceil($(".topbar").getBoundingClientRect().height)+12)+"px";
+  if(typeof form.scrollIntoView==="function") form.scrollIntoView({behavior:window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  form.classList.add("hlflash"); weekFormFocusTimer=setTimeout(()=>{form.classList.remove("hlflash");weekFormFocusTimer=null;},2400);
+}
 function weekItemHtml(w){
   return '<div class="item" data-wid="'+esc(w.id)+'"><div class="main"><div><span class="tag">'+esc(w.line)+'</span><b>'+esc(w.item)+'</b></div>'+(w.progress?'<div class="sub">'+esc(w.progress)+'</div>':'')+'</div><div class="ops"><button class="btn small" data-week-edit="'+esc(w.id)+'">编辑</button><button class="btn small danger" data-week-del="'+esc(w.id)+'">删除</button></div></div>';
 }
@@ -1262,7 +1364,7 @@ document.addEventListener("click", e=>{
   const ed = e.target.closest("[data-week-edit]");
   if(ed){ const w = DB.weekly.find(x=>x.id===ed.dataset.weekEdit); if(!w) return; editWeekId = w.id;
     $("#weekLine").value=w.line; $("#weekGroup").value=w.group; $("#weekItem").value=w.item; $("#weekProgress").value=w.progress||"";
-    $("#weekFormTitle").textContent="编辑周报事项"; $("#btnWeekSave").textContent="保存修改"; $("#btnWeekCancel").style.display=""; }
+    $("#weekFormTitle").textContent="编辑周报事项"; $("#btnWeekSave").textContent="保存修改"; $("#btnWeekCancel").style.display=""; revealWeekForm(); }
   const del = e.target.closest("[data-week-del]");
   if(del){ if(confirm("删除这条周报事项？")){ DB.weekly = DB.weekly.filter(x=>x.id!==del.dataset.weekDel); const ok=save(); toast(ok?"已删除周报条目":"保存失败：周报条目未能删除"); } }
 });
@@ -1983,7 +2085,7 @@ function refreshModeUI(){
 function resetTransientState(){
   editLogId = null; editTaskId = null; editProjId = null; editWeekId = null; taskDetailId=null; weekOffset=0;
   SMART = null; window.__pendingMemo = null; CONV_ROWS = [];
-  resetTaskExtras(); taskOrderMode=false;
+  resetTaskExtras(); taskOrderMode=false; closeProjectSwipes(); clearWeekFormFocus();
   $$(".home-fold").forEach(d=>d.open=false);
   $$(".modal-bg").forEach(m=>m.classList.remove("open"));
   ["#smartLive","#logSmartLive","#taskSmartLive"].forEach(s=>{ const el = $(s); if(el) el.textContent = ""; });
@@ -2071,6 +2173,7 @@ document.addEventListener("click", e=>{ const b = e.target.closest("[data-open-f
 function openProjDetail(){
   const p = DB.projects.find(x=>x.id===selProjId); if(!p) return;
   $("#pdTitle").textContent = p.name;
+  $("#btnPdEdit").dataset.projEdit=p.id; $("#btnPdDelete").dataset.projDel=p.id;
   $("#pdMeta").textContent = p.status + " · 负责人 " + (p.owner||"未填") + " · 进度 " + (p.progress||0) + "% · "+projectTaskSummary(p.id) + (p.risk ? " · 风险：" + p.risk : "") + (p.updatedAt ? " · 最近更新 " + fmtDate(p.updatedAt) : "") + (p.start || p.end ? " · " + (p.start||"") + " 至 " + (p.end||"") : "");
   $("#projDetailModal").classList.add("open");
 }
@@ -2311,7 +2414,7 @@ $("#btnResetDemo").addEventListener("click", ()=>{
   snapBegin(); closeCollabUI(); snapEnd();
   $$(".home-fold").forEach(d=>d.open=false);
   if(MODE === "demo"){ DB = demoData(); save(); renderAll(); }
-  toast("演示数据已重置为 V3.10 品牌光晕 · 全景玻璃版演示场景");
+  toast("演示数据已重置为 V3.11 品牌光晕 · 全景玻璃版演示场景");
 });
 renderCollabBar();
 document.addEventListener("pointerdown", e=>{
