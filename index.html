@@ -691,7 +691,6 @@ input[type=checkbox].big{accent-color:#0E5390}
 <div class="modal-bg" id="collabModal"><div class="modal"><div class="mhead"><h3>任务详情（协作演示）</h3><button class="btn small" data-close-collab="1">关闭</button></div><div id="collabBody"></div></div></div>
 <div class="toast" id="toast"></div>
 <script>try{ if(!localStorage.getItem("ts_workbench_mode")) localStorage.setItem("ts_workbench_mode","demo"); }catch(e){}</script>
-<script>try{ if(localStorage.getItem("ts_workbench_mode")==="demo" && !localStorage.getItem("ts_workbench_v2_demo")) setMode("demo"); }catch(e){}</script>
 <script>
 "use strict";
 /* ============ 工具与日期 ============ */
@@ -2632,5 +2631,6 @@ load();
   gotoPage(curPage); renderAll();
 })();
 </script>
+<script>try{ if(localStorage.getItem("ts_workbench_mode")==="demo" && !localStorage.getItem("ts_workbench_v2_demo")) setMode("demo"); }catch(e){}</script>
 </body>
 </html>
