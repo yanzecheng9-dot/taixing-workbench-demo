@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="泰兴数产工作台">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2720%27%20fill%3D%27white%27%2F%3E%3Ctext%20x%3D%2750%27%20y%3D%2747%27%20font-size%3D%2725%27%20font-weight%3D%27700%27%20fill%3D%27%25230E5390%27%20text-anchor%3D%27middle%27%20font-family%3D%27sans-serif%27%3E%E6%95%B0%E4%BA%A7%3C%2Ftext%3E%3Cpath%20d%3D%27M18%2062%20Q50%2080%2082%2060%27%20stroke%3D%27%2523E8821E%27%20stroke-width%3D%277%27%20fill%3D%27none%27%20stroke-linecap%3D%27round%27%2F%3E%3C%2Fsvg%3E">
-<title>泰兴数产 · 个人工作台 V3.12（品牌光晕 · 全景玻璃版）</title>
+<title>泰兴数产 · 个人工作台 V3.13（品牌光晕 · 全景玻璃版）</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231f3b63'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif'>数</text></svg>">
 <style>
 :root{
@@ -119,6 +119,17 @@ textarea{resize:vertical;min-height:40px}
 .filters .sp{flex:1}
 .proj-grid{display:grid;grid-template-columns:1fr;gap:0}
 .proj{cursor:pointer}
+.week-swipe{--week-action-width:128px;--week-shift:0px;position:relative;min-width:0;overflow:hidden;border-radius:10px;min-height:44px;border-bottom:1px solid #E8EDF3;isolation:isolate}
+.week-swipe:last-child{border-bottom:none}
+.week-swipe .item{position:relative;z-index:1;min-width:0;min-height:44px;border-bottom:0;touch-action:pan-y pinch-zoom;transform:translateX(var(--week-shift));transition:transform 180ms var(--ease-out)}
+.week-swipe.swipe-open{--week-shift:calc(0px - var(--week-action-width))}
+.week-swipe.swipe-dragging .item{transition:none;user-select:none;-webkit-user-select:none}
+.week-actions{position:absolute;inset:0 0 0 auto;width:var(--week-action-width);display:flex;opacity:0;pointer-events:none;clip-path:inset(0 0 0 calc(var(--week-action-width) + var(--week-shift)));background:#EAF2FA}
+.week-swipe.swipe-open .week-actions,.week-swipe.swipe-dragging .week-actions{opacity:1;pointer-events:auto}
+.week-actions .btn{flex:1;min-width:0;min-height:44px;padding:8px 4px;border:0;border-radius:0;background:#DCEBF8;color:#0E5390}
+.week-actions .btn.danger{background:#FBEDEC;color:#B43A31}
+.week-swipe .item:focus-visible,.week-actions .btn:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
+
 .proj-swipe{--proj-action-width:192px;--proj-shift:0px;position:relative;min-width:0;overflow:hidden;border-radius:var(--radius);margin-bottom:12px;isolation:isolate}
 .proj-swipe .proj{position:relative;z-index:1;margin-bottom:0;min-width:0;touch-action:pan-y pinch-zoom;transform:translateX(var(--proj-shift));transition:transform 180ms var(--ease-out)}
 .proj-swipe.swipe-open{--proj-shift:calc(0px - var(--proj-action-width))}
@@ -305,6 +316,7 @@ input[type=checkbox].big{accent-color:#0E5390}
 }
 @media (prefers-reduced-motion: reduce){
   .proj-swipe .proj{transition:none}
+  .week-swipe .item{transition:none}
   .modal-bg{transition:opacity 100ms ease-out,visibility 0s linear 100ms}
   .modal-bg.open{transition:opacity 100ms ease-out,visibility 0s}
   .modal-bg .modal,.modal-bg.open .modal{transform:none;transition:none}
@@ -429,7 +441,7 @@ input[type=checkbox].big{accent-color:#0E5390}
   <!-- 任务分派 -->
   <section class="page" id="page-tasks">
     <div class="card" id="collabBar" style="display:none">
-      <h3>协作流程演示 <span class="tag yellow">模拟角色 · 本机数据</span> <span class="tag gray">V3.12</span></h3>
+      <h3>协作流程演示 <span class="tag yellow">模拟角色 · 本机数据</span> <span class="tag gray">V3.13</span></h3>
       <div class="rolebtns">
         <div class="segtrack"><span class="segpill"></span><button class="btn small" data-role-set="leader">领导视角</button>
         <button class="btn small" data-role-set="me">员工本人</button>
@@ -510,8 +522,7 @@ input[type=checkbox].big{accent-color:#0E5390}
     <div class="form no-print">
       <h3 id="weekFormTitle">添加一条周报事项</h3>
       <div class="frow">
-        <div class="field"><label>条线 / 部门 <span class="sub">自动汇总默认分类，可修改</span></label><select id="weekLine"><option>业务条线</option><option>技术条线</option><option>项目条线</option><option>行政条线</option><option>飞行家</option><option>云通</option><option>其他</option></select></div>
-        <div class="field"><label>归入</label><select id="weekGroup"><option value="plan">下周计划</option><option value="done">本周完成</option></select></div>
+        <div class="field wide"><label>归入</label><select id="weekGroup"><option value="plan">下周计划</option><option value="done">本周完成</option></select></div>
         <div class="field wide"><label>事项</label><input type="text" id="weekItem" placeholder="填写周报事项名称"></div>
       </div>
       <div class="frow">
@@ -545,7 +556,7 @@ input[type=checkbox].big{accent-color:#0E5390}
   <button class="btn small" id="btnResetDemo">重置演示数据</button>
   <button class="btn small danger" id="btnClear">清空全部数据</button>
   <span id="dataInfo"></span>
-  <div class="sub" style="margin-top:6px">当前版本：V3.12 品牌光晕 · 全景玻璃版 · 2026-10-21</div>
+  <div class="sub" style="margin-top:6px">当前版本：V3.13 品牌光晕 · 全景玻璃版 · 2026-10-21</div>
 </details></div>
 
 <div class="modal-bg" id="weekReportModal"><div class="modal">
@@ -680,6 +691,7 @@ input[type=checkbox].big{accent-color:#0E5390}
 <div class="modal-bg" id="collabModal"><div class="modal"><div class="mhead"><h3>任务详情（协作演示）</h3><button class="btn small" data-close-collab="1">关闭</button></div><div id="collabBody"></div></div></div>
 <div class="toast" id="toast"></div>
 <script>try{ if(!localStorage.getItem("ts_workbench_mode")) localStorage.setItem("ts_workbench_mode","demo"); }catch(e){}</script>
+<script>try{ if(localStorage.getItem("ts_workbench_mode")==="demo" && !localStorage.getItem("ts_workbench_v2_demo")) setMode("demo"); }catch(e){}</script>
 <script>
 "use strict";
 /* ============ 工具与日期 ============ */
@@ -765,12 +777,12 @@ function normalizeBackup(raw){
   });
   const weekly = raw.weekly.map((x,i)=>{
     if(!isRecord(x)) failBackup("weekly["+i+"]");
-    const r={id:idField(x,"id"), line:textField(x,"line","业务条线"), group:textField(x,"group","plan"), item:textField(x,"item",""), progress:textField(x,"progress",""), weekStart:textField(x,"weekStart","")};
+    const r={id:idField(x,"id"), group:textField(x,"group","plan"), item:textField(x,"item",""), progress:textField(x,"progress",""), weekStart:textField(x,"weekStart","")};
     r.projectId=refField(x,"projectId","");
     if(x.generatedText !== undefined){
       if(!isRecord(x.generatedText)) failBackup("generatedText");
       r.generatedText={};
-      ["line","group","item","progress"].forEach(k=>{ if(typeof x.generatedText[k] !== "string") failBackup("generatedText."+k); r.generatedText[k]=x.generatedText[k]; });
+      ["group","item","progress"].forEach(k=>{ if(typeof x.generatedText[k] !== "string") failBackup("generatedText."+k); r.generatedText[k]=x.generatedText[k]; });
     }
     if(x.src !== undefined){
       if(typeof x.src !== "string") failBackup("src");
@@ -883,6 +895,7 @@ function priTag(p){ return p==="高" ? '<span class="tag red">高</span>' : (p==
 let curPage = "today";
 function gotoPage(name, animateNav = false){
   closeProjectSwipes();
+  closeWeekSwipes();
   curPage = name;
   const nav = $("#mainNav"), buttons = $$("#mainNav button");
   nav.classList.toggle("animate-nav", animateNav);
@@ -1358,6 +1371,123 @@ document.addEventListener("click", e=>{
 });
 
 /* ============ 周报 ============ */
+let weekGestureState=null, weekSwipeClick=null;
+function resetWeekSwipe(wrap){
+  wrap.classList.remove("swipe-open","swipe-dragging"); wrap.style.removeProperty("--week-shift");
+}
+function releaseWeekPointer(g){ try{ if(g.face.hasPointerCapture(g.id)) g.face.releasePointerCapture(g.id); }catch(e){} }
+function closeWeekSwipes(){
+  const g=weekGestureState; weekGestureState=null;
+  if(g){ if(g.axis==="x") weekSwipeClick={wrap:g.wrap,until:performance.now()+500}; releaseWeekPointer(g); }
+  document.querySelectorAll("#page-weekly .week-swipe").forEach(resetWeekSwipe);
+}
+function settleWeekSwipe(wrap,open){
+  document.querySelectorAll("#page-weekly .week-swipe").forEach(w=>{ if(w!==wrap) resetWeekSwipe(w); });
+  wrap.classList.remove("swipe-dragging"); wrap.style.removeProperty("--week-shift"); wrap.classList.toggle("swipe-open",open);
+}
+const weekGrid=$("#page-weekly");
+function weekGestureStart(wrap,face,x,y){
+  weekSwipeClick=null;
+  const width=wrap.querySelector(".week-actions").getBoundingClientRect().width || 128;
+  const wasOpen=wrap.classList.contains("swipe-open");
+  weekGestureState={wrap,face,id:null,touchId:null,driver:null,x,y,dx:0,axis:null,width,wasOpen,base:wasOpen?-width:0,lastX:x,lastT:performance.now(),vx:0,captured:false};
+  return weekGestureState;
+}
+function weekGestureMove(g,clientX,clientY){
+  const dx=clientX-g.x, dy=clientY-g.y; g.dx=dx;
+  const now=performance.now(), dt=now-g.lastT;
+  if(dt>0){ g.vx=0.65*g.vx+0.35*((clientX-g.lastX)/dt); }
+  g.lastX=clientX; g.lastT=now;
+  if(!g.axis){
+    const ax=Math.abs(dx), ay=Math.abs(dy);
+    if(ax>=6 && ax>=ay*1.05){
+      g.axis="x";
+      document.querySelectorAll("#page-weekly .week-swipe").forEach(w=>{ if(w!==g.wrap) resetWeekSwipe(w); });
+      g.wrap.classList.add("swipe-dragging");
+      if(g.driver==="pointer" && !g.captured){ try{ g.face.setPointerCapture(g.id); g.captured=true; }catch(err){} }
+    } else if(ay>=12 && ay>ax*1.6){ g.axis="y"; }
+    else return;
+  }
+  if(g.axis!=="x") return;
+  g.wrap.style.setProperty("--week-shift",Math.max(-g.width,Math.min(0,g.base+dx))+"px");
+}
+function weekGestureEnd(g,cancelled){
+  if(g.axis!=="x") return;
+  const threshold=Math.min(48,g.width*.25);
+  let open;
+  if(cancelled) open=g.wasOpen;
+  else if(g.vx<=-0.4 && g.dx<=-40) open=true;
+  else if(g.vx>=0.4 && g.dx>=40) open=false;
+  else open=g.wasOpen?(g.dx<threshold):(-g.dx>=threshold);
+  settleWeekSwipe(g.wrap,open);
+  weekSwipeClick={wrap:g.wrap,until:performance.now()+500};
+}
+weekGrid.addEventListener("pointerdown",e=>{
+  if(e.pointerType==="touch" || weekGestureState) return;
+  if(e.button!==0) return;
+  const face=e.target.closest("[data-wid]"); if(!face || e.target.closest("button")) return;
+  const wrap=face.closest(".week-swipe"); if(!wrap) return;
+  const g=weekGestureStart(wrap,face,e.clientX,e.clientY); g.id=e.pointerId; g.driver="pointer";
+});
+window.addEventListener("pointermove",e=>{
+  const g=weekGestureState; if(!g || g.driver!=="pointer" || e.pointerId!==g.id) return;
+  weekGestureMove(g,e.clientX,e.clientY);
+  if(g.axis==="x" && e.cancelable) e.preventDefault();
+},{passive:false});
+function endWeekSwipe(e,cancelled=false){
+  const g=weekGestureState; if(!g || g.driver!=="pointer" || e.pointerId!==g.id) return;
+  weekGestureState=null; releaseWeekPointer(g);
+  weekGestureEnd(g,cancelled);
+}
+window.addEventListener("pointerup",e=>endWeekSwipe(e));
+window.addEventListener("pointercancel",e=>endWeekSwipe(e,true));
+weekGrid.addEventListener("lostpointercapture",e=>{ if(weekGestureState && weekGestureState.driver==="pointer" && weekGestureState.id===e.pointerId) endWeekSwipe(e,true); });
+weekGrid.addEventListener("touchstart",e=>{
+  if(weekGestureState || !e.touches || e.touches.length!==1) return;
+  const face=e.target.closest("[data-wid]"); if(!face || e.target.closest("button")) return;
+  const wrap=face.closest(".week-swipe"); if(!wrap) return;
+  const t=e.touches[0];
+  const g=weekGestureStart(wrap,face,t.clientX,t.clientY); g.driver="touch"; g.touchId=t.identifier;
+},{passive:true});
+weekGrid.addEventListener("touchmove",e=>{
+  const g=weekGestureState; if(!g || g.driver!=="touch") return;
+  let t=null; for(let k=0;k<e.touches.length;k++){ if(e.touches[k].identifier===g.touchId){ t=e.touches[k]; break; } }
+  if(!t) t=e.touches[0]; if(!t) return;
+  weekGestureMove(g,t.clientX,t.clientY);
+  if(g.axis==="x" && e.cancelable) e.preventDefault();
+},{passive:false});
+function endWeekTouch(e,cancelled){
+  const g=weekGestureState; if(!g || g.driver!=="touch") return;
+  if(!cancelled && e.changedTouches){
+    let found=false; for(let k=0;k<e.changedTouches.length;k++){ if(e.changedTouches[k].identifier===g.touchId){ found=true; break; } }
+    if(!found) return;
+  }
+  weekGestureState=null;
+  weekGestureEnd(g,cancelled);
+}
+weekGrid.addEventListener("touchend",e=>endWeekTouch(e,false));
+weekGrid.addEventListener("touchcancel",e=>endWeekTouch(e,true));
+window.addEventListener("blur",closeWeekSwipes);
+// 在原业务点击监听器之前拦住拖动合成的点击及已展开卡面的点击。
+document.addEventListener("click",e=>{
+  const wrap=e.target.closest("#page-weekly .week-swipe");
+  if(!wrap){ closeWeekSwipes(); return; }
+  const action=e.target.closest(".week-actions button");
+  if(action){ closeWeekSwipes(); return; }
+  if(!e.target.closest("[data-wid]")) return;
+  if(weekSwipeClick && weekSwipeClick.wrap===wrap && performance.now()<weekSwipeClick.until && e.detail>0){
+    weekSwipeClick=null; e.preventDefault(); e.stopImmediatePropagation(); return;
+  }
+  weekSwipeClick=null;
+  if(wrap.classList.contains("swipe-open")){ closeWeekSwipes(); e.preventDefault(); e.stopImmediatePropagation(); }
+},true);
+weekGrid.addEventListener("focusin",e=>{ const action=e.target.closest(".week-actions button"); if(action) settleWeekSwipe(action.closest(".week-swipe"),true); });
+weekGrid.addEventListener("focusout",e=>{ const wrap=e.target.closest(".week-swipe"); if(wrap && !wrap.contains(e.relatedTarget)) resetWeekSwipe(wrap); });
+weekGrid.addEventListener("keydown",e=>{
+  const wrap=e.target.closest(".week-swipe"); if(!wrap) return;
+  if(e.key==="Escape"){ e.preventDefault(); closeWeekSwipes(); wrap.querySelector("[data-wid]").focus(); return; }
+});
+
 let editWeekId = null;
 let weekFormFocusTimer = null;
 function clearWeekFormFocus(){
@@ -1372,12 +1502,13 @@ function revealWeekForm(){
   form.classList.add("hlflash"); weekFormFocusTimer=setTimeout(()=>{form.classList.remove("hlflash");weekFormFocusTimer=null;},2400);
 }
 function weekItemHtml(w){
-  return '<div class="item" data-wid="'+esc(w.id)+'"><div class="main"><div><span class="tag">'+esc(w.line)+'</span><b>'+esc(w.item)+'</b></div>'+(w.progress?'<div class="sub">'+esc(w.progress)+'</div>':'')+'</div><div class="ops"><button class="btn small" data-week-edit="'+esc(w.id)+'">编辑</button><button class="btn small danger" data-week-del="'+esc(w.id)+'">删除</button></div></div>';
+  return '<div class="week-swipe" data-week-swipe="'+esc(w.id)+'"><div class="item" data-wid="'+esc(w.id)+'" tabindex="-1"><div class="main"><div><b>'+esc(w.item)+'</b></div>'+(w.progress?'<div class="sub">'+esc(w.progress)+'</div>':'')+'</div></div><div class="week-actions" role="group" aria-label="'+esc(w.item)+'的周报操作"><button class="btn" data-week-edit="'+esc(w.id)+'">编辑</button><button class="btn danger" data-week-del="'+esc(w.id)+'">删除</button></div></div>';
 }
 function curWeekStart(){ return weekRange().start; }
 function weekItems(){ const s = curWeekStart(); return DB.weekly.filter(w=>w.weekStart===s); }
-function migrateWeekly(target = DB){ target.weekly.forEach(w=>{ if(!w.weekStart) w.weekStart = "__legacy__"; }); }
+function migrateWeekly(target = DB){ target.weekly.forEach(w=>{ if(!w.weekStart) w.weekStart = "__legacy__"; delete w.line; if(w.generatedText && typeof w.generatedText==="object") delete w.generatedText.line; }); }
 function renderWeekly(){
+  closeWeekSwipes();
   refreshBriefBtn();
   const mine = weekItems();
   const done = mine.filter(w=>w.group==="done"), plan = mine.filter(w=>w.group==="plan");
@@ -1386,11 +1517,11 @@ function renderWeekly(){
   const wr = weekRange(); $("#weekRange").textContent = "本周：" + wr.start + " 至 " + wr.end;
   const legacy = DB.weekly.filter(w=>w.weekStart==="__legacy__");
   $("#legacyWeekCard").style.display = legacy.length ? "" : "none";
-  $("#legacyWeekList").innerHTML = legacy.map(w=>'<div class="item"><div class="main"><div><span class="tag">'+esc(w.line)+'</span><b>'+esc(w.item)+'</b></div></div><div class="ops"><button class="btn small" data-legacy-assign="'+esc(w.id)+'">归入本周</button><button class="btn small danger" data-legacy-del="'+esc(w.id)+'">删除</button></div></div>').join("");
+  $("#legacyWeekList").innerHTML = legacy.map(w=>'<div class="item"><div class="main"><div><b>'+esc(w.item)+'</b></div></div><div class="ops"><button class="btn small" data-legacy-assign="'+esc(w.id)+'">归入本周</button><button class="btn small danger" data-legacy-del="'+esc(w.id)+'">删除</button></div></div>').join("");
 }
 $("#btnWeekSave").addEventListener("click", ()=>{
   const item = $("#weekItem").value.trim(); if(!item){ toast("事项不能为空"); return; }
-  const rec = { line:$("#weekLine").value, group:$("#weekGroup").value, item, progress:$("#weekProgress").value.trim(), weekStart:curWeekStart() };
+  const rec = { group:$("#weekGroup").value, item, progress:$("#weekProgress").value.trim(), weekStart:curWeekStart() };
   if(editWeekId && !DB.weekly.find(x=>x.id===editWeekId)) editWeekId = null;
   const weekWasEdit=!!editWeekId;
   if(editWeekId){ Object.assign(DB.weekly.find(x=>x.id===editWeekId), rec); }
@@ -1408,7 +1539,7 @@ $("#btnWeekCancel").addEventListener("click", ()=>{ editWeekId=null; $("#weekFor
 document.addEventListener("click", e=>{
   const ed = e.target.closest("[data-week-edit]");
   if(ed){ const w = DB.weekly.find(x=>x.id===ed.dataset.weekEdit); if(!w) return; editWeekId = w.id;
-    $("#weekLine").value=w.line; $("#weekGroup").value=w.group; $("#weekItem").value=w.item; $("#weekProgress").value=w.progress||"";
+    $("#weekGroup").value=w.group; $("#weekItem").value=w.item; $("#weekProgress").value=w.progress||"";
     $("#weekFormTitle").textContent="编辑周报事项"; $("#btnWeekSave").textContent="保存修改"; $("#btnWeekCancel").style.display=""; revealWeekForm(); }
   const del = e.target.closest("[data-week-del]");
   if(del){ if(confirm("删除这条周报事项？")){ DB.weekly = DB.weekly.filter(x=>x.id!==del.dataset.weekDel); const ok=save(); toast(ok?"已删除周报条目":"保存失败：周报条目未能删除"); } }
@@ -1419,20 +1550,20 @@ function weekStartForDate(date){
   const d = new Date(date+"T00:00:00"); if(Number.isNaN(d.getTime())) return "";
   d.setDate(d.getDate()-(d.getDay()+6)%7); return dstr(d);
 }
-function generatedFields(w){ return {line:w.line, group:w.group, item:w.item, progress:w.progress||""}; }
-function sameGenerated(a,b){ return ["line","group","item","progress"].every(k=>(a[k]||"")===(b[k]||"")); }
+function generatedFields(w){ return {group:w.group, item:w.item, progress:w.progress||""}; }
+function sameGenerated(a,b){ return ["group","item","progress"].every(k=>(a[k]||"")===(b[k]||"")); }
 function generatedSources(data = DB){
   const rows = new Map();
   const name = id=>{ const p = data.projects.find(p=>p.id===id); return p ? p.name : ""; };
   data.logs.filter(logHappened).forEach(l=>{
     const weekStart=weekStartForDate(l.date); if(!weekStart) return;
     const src="log:"+l.id;
-    rows.set(src, {src, weekStart, projectId:l.projectId||"", line:"项目条线", group:"done", item:(name(l.projectId)?"【"+name(l.projectId)+"】":"")+l.content, progress:l.date+" "+l.type});
+    rows.set(src, {src, weekStart, projectId:l.projectId||"", group:"done", item:(name(l.projectId)?"【"+name(l.projectId)+"】":"")+l.content, progress:l.date+" "+l.type});
   });
   data.tasks.filter(t=>taskCompleted(t) && t.doneAt).forEach(t=>{
     const weekStart=weekStartForDate(t.doneAt); if(!weekStart) return;
     const src="task:"+t.id;
-    rows.set(src, {src, weekStart, projectId:t.projectId||"", line:"业务条线", group:"done", item:"完成任务："+t.title,
+    rows.set(src, {src, weekStart, projectId:t.projectId||"", group:"done", item:"完成任务："+t.title,
       progress:"完成于 "+t.doneAt+(t.collab?" · 执行人 "+roleName(t.collab.executor)+(t.collab.firstAssignee!==t.collab.executor?" · 最初接收 "+roleName(t.collab.firstAssignee):""):" · 责任人 "+(t.owner||""))});
   });
   return rows;
@@ -1447,7 +1578,7 @@ function syncWeekly(createStart = "", data = DB){
     const edited=!w.generatedText || !sameGenerated(w,w.generatedText);
     if(edited){ stats.kept++; if(!expected || !w.generatedText || !sameGenerated(expected,w.generatedText)) stats.conflicts++; return true; }
     if(!expected){ stats.removed++; return false; }
-    if(!sameGenerated(w,expected) || (w.projectId||"")!==expected.projectId){ Object.assign(w,generatedFields(expected),{projectId:expected.projectId}); stats.updated++; }
+    if(!sameGenerated(w,expected) || (w.projectId||"")!==expected.projectId){ Object.assign(w,generatedFields(expected),{projectId:expected.projectId}); delete w.line; stats.updated++; }
     w.generatedText=generatedFields(expected);
     return true;
   });
@@ -1484,7 +1615,7 @@ $("#btnSuggestOk").addEventListener("click", ()=>{
   const rows = window.__suggestRows || [], start = addDays(curWeekStart(), 7);
   let added=0;
   rows.forEach((r,i)=>{ const c=document.querySelector('[data-suggest-index="'+i+'"]'); if(!c || !c.checked) return; if(DB.weekly.some(w=>w.src===r.src && w.weekStart===start)) return;
-    DB.weekly.push({id:uid(),line:"业务条线",group:"plan",item:r.task.title,progress:r.task.due?"截止 "+r.task.due:"持续推进",weekStart:start,src:r.src}); added++;
+    DB.weekly.push({id:uid(),group:"plan",item:r.task.title,progress:r.task.due?"截止 "+r.task.due:"持续推进",weekStart:start,src:r.src}); added++;
   });
   $("#suggestPlanModal").classList.remove("open"); window.__suggestRows=null;
   if(added){ const ok=save(false); toast(ok?"已加入下周计划 "+added+" 条":"保存失败：下周计划未能写入"); } else toast("未选择新的下周计划");
@@ -1715,15 +1846,15 @@ function demoData(){
   ];
   const logs = logDefs.map(a=>({ id:uid(), date:addDays(T,a[0]), time:a[1], type:a[2], content:a[3], related:a[4], projectId:a[6] }));
   const weekly = [
-    { id:uid(), line:"项目条线", group:"done", item:"能碳平台建设简要方案完成 10 页定稿", progress:"已交付 Word 版" },
-    { id:uid(), line:"飞行家", group:"done", item:"飞行记录台账更新及培训资料归档启动", progress:"台账已更新" },
-    { id:uid(), line:"云通", group:"done", item:"验收材料初稿完成并送甲方预审", progress:"待甲方反馈" },
-    { id:uid(), line:"行政条线", group:"done", item:"资产盘点差异清单形成", progress:"待复核签字" },
-    { id:uid(), line:"技术条线", group:"done", item:"个人工作台优化版完成品牌化改版和智能录入", progress:"真机验收中" },
-    { id:uid(), line:"项目条线", group:"plan", item:"能碳平台方案按领导意见修订并汇报", progress:"先改第四章，再过答辩备忘" },
-    { id:uid(), line:"技术条线", group:"plan", item:"个人工作台优化版完工冻结并交复审", progress:"周五前自测通过" },
-    { id:uid(), line:"云通", group:"plan", item:"验收材料正式报送", progress:"周三前发出" },
-    { id:uid(), line:"行政条线", group:"plan", item:"资产盘点差异清单复核签字归档", progress:"周四前办结" }
+    { id:uid(), group:"done", item:"能碳平台建设简要方案完成 10 页定稿", progress:"已交付 Word 版" },
+    { id:uid(), group:"done", item:"飞行记录台账更新及培训资料归档启动", progress:"台账已更新" },
+    { id:uid(), group:"done", item:"验收材料初稿完成并送甲方预审", progress:"待甲方反馈" },
+    { id:uid(), group:"done", item:"资产盘点差异清单形成", progress:"待复核签字" },
+    { id:uid(), group:"done", item:"个人工作台优化版完成品牌化改版和智能录入", progress:"真机验收中" },
+    { id:uid(), group:"plan", item:"能碳平台方案按领导意见修订并汇报", progress:"先改第四章，再过答辩备忘" },
+    { id:uid(), group:"plan", item:"个人工作台优化版完工冻结并交复审", progress:"周五前自测通过" },
+    { id:uid(), group:"plan", item:"验收材料正式报送", progress:"周三前发出" },
+    { id:uid(), group:"plan", item:"资产盘点差异清单复核签字归档", progress:"周四前办结" }
   ];
   const memos = [
     { id:uid(), content:"汇报时不报节能量数字，不承诺 AI 上线时间，这条口径记牢", when:addDays(T,-1)+" 17:20" },
@@ -1762,7 +1893,7 @@ $("#globalSearch").addEventListener("input", e=>{
   DB.logs.forEach(l=>{ if([l.content,l.related,projName(l.projectId),l.type,l.date,l.time].join(" ").includes(kw)) hits.push({ kind:"日志", id:l.id, page:"logs", html:'<span class="tag">'+esc(l.type)+'</span>'+esc(l.content), sub:l.date+" "+(l.time||""), page:"logs" }); });
   DB.tasks.forEach(t=>{ if(t.collab && (MODE!=="demo" || !collabVisible(t,ROLE))) return; if([t.title,t.owner,projName(t.projectId),taskSearchStatus(t),t.priority,t.priority+"优先级",t.due].join(" ").includes(kw)) hits.push({ kind:"任务", id:t.id, page:"tasks", html:esc(t.title)+" "+dueLabel(t), sub:"责任人 "+(t.owner||"未填"), page:"tasks" }); });
   DB.projects.forEach(p=>{ if([p.name,p.owner,p.status,p.risk].join(" ").includes(kw)) hits.push({ kind:"项目", id:p.id, page:"projects", html:esc(p.name)+" "+statusTag(p.status), sub:"进度 "+(p.progress||0)+"%", page:"projects" }); });
-  DB.weekly.forEach(w=>{ if([w.item,w.line,w.progress].join(" ").includes(kw)) hits.push({ kind:"周报", id:w.id, page:"weekly", html:'<span class="tag">'+esc(w.line)+'</span>'+esc(w.item), sub:w.group==="done"?"本周完成":"下周计划", page:"weekly" }); });
+  DB.weekly.forEach(w=>{ if([w.item,w.progress].join(" ").includes(kw)) hits.push({ kind:"周报", id:w.id, page:"weekly", html:''+esc(w.item), sub:w.group==="done"?"本周完成":"下周计划", page:"weekly" }); });
   DB.memos.forEach(m=>{ if([m.content,m.when].join(" ").includes(kw)) hits.push({kind:"备忘",id:m.id,html:esc(m.content),sub:m.when||""}); });
   $("#searchBody").innerHTML = hits.length ? hits.slice(0,30).map(hh=>'<div class="item"><div class="main"><div><span class="tag gray">'+hh.kind+'</span>'+hh.html+'</div><div class="sub">'+esc(hh.sub)+'</div></div><div class="ops"><button class="btn small" data-open-hit="'+hh.kind+'|'+esc(hh.id)+'">打开</button></div></div>').join("") : '<div class="empty">没有搜到「'+esc(kw)+'」相关内容</div>';
   box.style.display = "block";
@@ -2131,6 +2262,7 @@ function resetTransientState(){
   editLogId = null; editTaskId = null; editProjId = null; editWeekId = null; taskDetailId=null; weekOffset=0;
   SMART = null; window.__pendingMemo = null; CONV_ROWS = [];
   resetTaskExtras(); taskOrderMode=false; closeProjectSwipes(); clearWeekFormFocus();
+  closeWeekSwipes();
   $$(".home-fold").forEach(d=>d.open=false);
   $$(".modal-bg").forEach(m=>m.classList.remove("open"));
   ["#smartLive","#logSmartLive","#taskSmartLive"].forEach(s=>{ const el = $(s); if(el) el.textContent = ""; });
@@ -2154,7 +2286,6 @@ function resetTransientState(){
     qKind: "log", qDate: todayStr(), qTime: "", qType: "项目推进", qOwner: "", qPri: "中", qProject: "" };
   Object.keys(DEF).forEach(id=>{ const el = document.getElementById(id); if(el) el.value = DEF[id]; });
   const psx = $("#projStatus"); if(psx) psx.selectedIndex = 0;
-  const wlx = $("#weekLine"); if(wlx) wlx.selectedIndex = 0;
 }
 function setMode(m){
   resetTransientState();
@@ -2459,7 +2590,7 @@ $("#btnResetDemo").addEventListener("click", ()=>{
   snapBegin(); closeCollabUI(); snapEnd();
   $$(".home-fold").forEach(d=>d.open=false);
   if(MODE === "demo"){ DB = demoData(); save(); renderAll(); }
-  toast("演示数据已重置为 V3.12 品牌光晕 · 全景玻璃版演示场景");
+  toast("演示数据已重置为 V3.13 品牌光晕 · 全景玻璃版演示场景");
 });
 renderCollabBar();
 document.addEventListener("pointerdown", e=>{
@@ -2501,6 +2632,5 @@ load();
   gotoPage(curPage); renderAll();
 })();
 </script>
-<script>try{ if(localStorage.getItem("ts_workbench_mode")==="demo" && !localStorage.getItem("ts_workbench_v2_demo")) setMode("demo"); }catch(e){}</script>
 </body>
 </html>
